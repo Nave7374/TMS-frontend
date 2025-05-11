@@ -17,12 +17,32 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    fetch(`http://localhost:8080/api/users/username/${userData.username}`, {
+      method: 'GET',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+      setUser(data);
+      localStorage.setItem('user', JSON.stringify(data));
+      console.log("Data Saved");
+    }).catch((error) => {
+      console.error(error);
+    });
+    
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 

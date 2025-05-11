@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function EditShipmentForm() {
@@ -15,13 +14,25 @@ function EditShipmentForm() {
     const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/shipments/${id}`)
-      .then((res) => {
-        setShipment(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    fetch(`http://localhost:8080/api/shipments/${id}`, {
+      method: 'GET',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+      setShipment(data);
+      setStatus(data.status); // Set the initial status from the fetched shipment data
+    }).catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+    // Fetch the shipment data from the backend using the ID
   }, [id]);
 
     function handleSubmit(e) {
@@ -30,13 +41,28 @@ function EditShipmentForm() {
       ...shipment,
       status: status
     };
-    axios.put(`http://localhost:8080/api/shipments/${id}`,newShipment) 
-      .then(() => {
-        navigate('/shipments');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    fetch(`http://localhost:8080/api/shipments/${id}`, {
+      method: 'PUT',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newShipment),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+      alert("Shipment updated successfully!");
+      setStatus(''); // Reset form fields
+      navigate('/shipments'); // Redirect to shipments list
+    }).catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+    // Post new shipment data to backend
   };
 
   return (

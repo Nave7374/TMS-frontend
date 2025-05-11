@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Box, Typography, Button, CircularProgress, TextField } from '@mui/material';
 import 'leaflet/dist/leaflet.css';
-import axios from 'axios';
 import L from 'leaflet';
 
 // Fixing marker icons
@@ -33,18 +32,26 @@ function TrackingPage() {
 
   useEffect(() => {
     // Initial fetch
-    axios.get('http://localhost:8080/api/vehicle/track/1')
-      .then(response => {
-        setVehicle(response.data.vehicle);
-        if (response.data.location) {
-          setLocation([response.data.location.lat, response.data.location.lng]);
+    fetch('http://localhost:8080/api/vehicle',{
+    method: 'GET',
+        headers: {
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`, //
+          'Content-Type': 'application/json',
         }
-        setLoading(false);
-      })
-      .catch(error => {
-        console.log("Error fetching vehicle data:", error);
-        setLoading(false);
-      });
+    }).then((response)=>{
+      if(!response.ok){
+        throw new Error('Network Error');
+      } 
+      return response.json();
+    }).then((data)=>{
+      console.log(data);
+      setVehicle(data);
+      setLoading(false);
+    }).catch(error =>{
+      alert(error);
+      console.log(error);
+      setLoading(false);
+    })
   }, []);
 
   const startRealTimeTracking = () => {
@@ -53,15 +60,27 @@ function TrackingPage() {
     setTracking(true);
 
     intervalRef.current = setInterval(() => {
-      axios.get('http://localhost:8080/api/vehicle/track/1')
-        .then(response => {
-          if (response.data.location) {
-            setLocation([response.data.location.lat, response.data.location.lng]);
-          }
-        })
-        .catch(error => {
-          console.log("Error updating vehicle location:", error);
-        });
+
+      fetch('http://localhost:8080/api/vehicles',{
+        method: 'GET',
+        headers: {
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`, //
+          'Content-Type': 'application/json',
+        }
+      }).then(response =>{
+        console.log(response);
+        if(!response.ok){
+          throw new Error('Network Error');
+        }
+        return response.json();
+      }).then(data =>{
+        console.log(data);
+        if(data){
+          setLocation([data.location.lat , data.location.lng]);
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
     }, 5000); // Fetch every 5 seconds
   };
 
@@ -78,18 +97,29 @@ function TrackingPage() {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.get(`http://localhost:8080/api/vehicle/track/${shipmentid}`)
-      .then(response => {
-        setVehicle(response.data.vehicle);
-        if (response.data.location) {
-          setLocation([response.data.location.lat, response.data.location.lng]);
-          setShowmap(true);
+
+    fetch(`http://localhost:8080/api/vehicle/track/${shipmentid}`,{
+        method: 'GET',
+        headers: {
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`, //
+          'Content-Type': 'application/json',
         }
-      })
-      .catch(error => {
+      }).then(response =>{
+        console.log(response);
+        if(!response.ok){
+          throw new Error('Network Error');
+        }
+        return response.json();
+      }).then(data =>{
+        console.log(data);
+        if(data){
+          setVehicle(data);
+          showMap(true);
+        }
+      }).catch(error=>{
         alert("Enter a Valid Shipment id", error);
-      });
+        console.log(error);
+      })
   }
 
   return (

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, MenuItem, Select } from '@mui/material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function AddVehicleForm() {
     const [vehicle , setVehicle] = useState({
         model: '',
-        status: '',
-        company:'',
+        make:'',
         year:'',
         registrationNumber:'',
         type:''
@@ -17,16 +15,27 @@ function AddVehicleForm() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    // Post new vehicle data to backend
-    axios.post('http://localhost:8080/api/vehicles/add', vehicle)
-      .then(() => {
-        alert("Vehicle added successfully!");
-        setVehicle({ model: '', status: '', company:'', year:'', registrationNumber:'',type:'' }); // Reset form fields
-        navigate('/vehicles'); // Redirect to vehicles list
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    fetch('http://localhost:8080/api/vehicles/add', {
+      method: 'POST',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(vehicle),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+      alert("Vehicle added successfully!");
+      setVehicle({ model: '', make:'', year:'', registrationNumber:'',type:'' }); // Reset form fields
+      navigate('/vehicles'); // Redirect to vehicles list
+    }).catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+      alert("Error adding vehicle");
+    });
   };
 
   function handleChange(e) {
@@ -73,8 +82,8 @@ function AddVehicleForm() {
           <TextField
             label="Company"
             variant="outlined"
-            name="company"
-            value={vehicle.company}
+            name="make"
+            value={vehicle.make}
             onChange={handleChange} 
             required
           />
@@ -84,14 +93,6 @@ function AddVehicleForm() {
             <MenuItem value="Van">Van</MenuItem>
             <MenuItem value="Mini Lorry">Mini Lorry</MenuItem>
           </Select>
-          <TextField
-            label="Status"
-            variant="outlined"
-            name="status"
-            value={vehicle.status}
-            onChange={handleChange} 
-            required
-          />
           <Button variant="contained" color="primary" type="submit">
             Add Vehicle
           </Button>
@@ -108,4 +109,3 @@ export default AddVehicleForm;
 //     private String make;
 //     private String model;
 //     private int year;
-//     private String status;  e.g., 'available', 'in use', etc.

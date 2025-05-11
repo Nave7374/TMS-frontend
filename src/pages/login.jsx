@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
 import { LoginContext } from '../utils/context';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -32,27 +31,37 @@ function Login() {
       password: password,
       role: role
     }
-    axios.post("http://localhost:8080/api/auth/login",data)
-    .then((res)=>{
-      console.log(res);
-      localStorage.setItem("token",res.data);
-      setisLogedin(true);
-      console.log(res.data.user);
-      setText("Login successful");
-      login({username , role , password}); // Store user info in context
-      if(role === "admin"){
-        navigate("/dashboard");
-      }else if(role === "user"){
-        navigate("/profile");
-      }else if(role === "driver"){
-        navigate("/profile");
+    fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-      setText("Login successful");
+      return response.text();
     })
-    .catch((err)=>{
-      setText("Invalid username or password");
-      console.log(err);
+    .then((data) => {
+      console.log(data);
+      if (data==='Login successful!') {
+        localStorage.setItem('token', data);
+        setisLogedin(true);
+        setText("Login successful");
+        role==='admin'&& navigate('/dashboard');
+        role==='user' && navigate('/profile');
+        role=== 'driver' && navigate('/profile');
+        login({username,password,role}); // Call the login function from AuthContext
+      } else {
+        setText(data);
+      }
     })
+    .catch((error) => {
+      console.log(error);
+      setText("Invalid credentials");
+    });
   }
 
   return (
@@ -81,7 +90,7 @@ function Login() {
             <MenuItem value=""><em>None</em></MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
             <MenuItem value="user">User</MenuItem>
-            <MenuItem value="driver">Driver</MenuItem>
+            {/* <MenuItem value="driver">Driver</MenuItem> */}
           </Select>
         </FormControl>
         <Button type='submit' variant="contained" color="primary" style={{marginTop:"10px"}} fullWidth>Login</Button>

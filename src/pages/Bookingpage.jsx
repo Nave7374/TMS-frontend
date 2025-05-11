@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import {
   Box, Button, MenuItem, Select, TextField, Typography, Snackbar, Alert
 } from '@mui/material';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
 
 const vehicleTypes = ['Truck', 'Van', 'Mini Lorry']; // This can be fetched from backend too
 
 function BookingPage() {
-  
+
+  const { id } = useParams();
   const [success, setSuccess] = useState(false);
 
   const [shipmentdetails , setShipmentdetails] = useState({
@@ -18,24 +20,37 @@ function BookingPage() {
     weight: '',
   });
 
-  const handleBooking = async () => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/bookings', shipmentdetails).then((res) => {
-        console.log(res.data);
-      });
-      console.log('Booking successful:', response.data);
+  // private String vehicleType;
+  //   private Double weight;
+  //   private String origin;
+  //   private String destination;
+  //   private Date shipmentDate;
+	
+
+  function handleBooking(e){
+    e.preventDefault();
+
+    fetch(`http://localhost:8080/api/shipments/book/${id}`, {
+      method: 'POST',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(shipmentdetails),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
       setSuccess(true);
-      // Reset form
-      setShipmentdetails({
-        origin: '',
-        destination: '',
-        shipmentDate: '',
-        vehicleType: '',
-        weight: ''
-      });
-    } catch (error) {
-      console.error('Booking failed:', error);
-    }
+      setShipmentdetails({ origin: '', destination: '', shipmentDate: '', vehicleType: '', weight: '' }); // Reset form fields
+    }).catch((error) => {
+      console.error(error);
+      alert("Error booking shipment");
+    });
+    // Post new shipment data to backend
   };
 
   function handleChange(e) {
@@ -64,12 +79,12 @@ function BookingPage() {
         value={shipmentdetails.shipmentDate} onChange={handleChange} required
       />
       <Select
-        fullWidth displayEmpty value={shipmentdetails.vehicleType} onChange={handleChange}
+        fullWidth displayEmpty name="vehicleType" value={shipmentdetails.vehicleType} onChange={handleChange}
         sx={{ mt: 2 }} required
       >
-        <MenuItem value="" disabled>Select Vehicle Type</MenuItem>
+        <MenuItem value=""  disabled>Select Vehicle Type</MenuItem>
         {vehicleTypes.map((type, index) => (
-          <MenuItem key={index} value={type}>{type}</MenuItem>
+          <MenuItem key={index}  value={type}>{type}</MenuItem>
         ))}
       </Select>
       <TextField

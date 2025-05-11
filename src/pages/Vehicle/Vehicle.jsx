@@ -1,41 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper } from '@mui/material';
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Vehicles() {
 
     const navigate = useNavigate();
     const [vehicles, setVehicles] = useState([]);
+    const [loading,setLoading] = useState(true);
 
     // Fetch vehicles from the backend (assuming an API endpoint like /api/vehicles)
     useEffect(() => {
-    axios.get('http://localhost:8080/api/vehicles',{
-      headers:{
-        'Authorization': `Bearer ${localStorage.getItem('token')}` //
-      }
-    })
-        .then(res => {
-        console.log(res);
-        
-        })
-        .catch(err => {
-        alert(err);
-        });
+
+      fetch('http://localhost:8080/api/vehicles', {
+        method: 'GET',
+        headers: {
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }).then((data) => {
+        console.log(data);
+        setVehicles(data);
+        setLoading(false);
+      }).catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
     }, []);
 
     function handleDelete(vehicleId){
     // Handle vehicle deletion (call API)
-    axios.delete(`http://localhost:8080/api/vehicles/${vehicleId}`)
-        .then(() => {
-        setVehicles(vehicles.filter(vehicle => vehicle.id !== vehicleId));
-        })
-        .catch(err => {
-        alert(err);
-        });
+      fetch(`http://localhost:8080/api/vehicles/${vehicleId}`, {
+        method: 'DELETE',
+        headers: {
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }).then(() => {
+        setVehicles(vehicles.filter(vehicle => vehicle.id !== vehicleId)); // Update state after delete
+        alert("Vehicle deleted successfully!");
+      }).catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
     };
 
   return (
@@ -43,6 +60,7 @@ function Vehicles() {
       <Typography variant="h4" align="center" gutterBottom>
         Vehicle Management
       </Typography>
+      {loading?<CircularProgress />:<>
 
       <Button 
         variant="contained" 
@@ -62,6 +80,7 @@ function Vehicles() {
               <TableCell>Vehicle No</TableCell>
               <TableCell>Model</TableCell>
               <TableCell>Type</TableCell>
+              <TableCell>Registration Number</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -69,9 +88,10 @@ function Vehicles() {
           <TableBody>
             {vehicles.map((vehicle) => (
               <TableRow key={vehicle.id}>
-                <TableCell>{vehicle.vehicleNo}</TableCell>
+                <TableCell>{vehicle.id}</TableCell>
                 <TableCell>{vehicle.model}</TableCell>
                 <TableCell>{vehicle.type}</TableCell>
+                <TableCell>{vehicle.registrationNumber}</TableCell>
                 <TableCell>{vehicle.status}</TableCell>
                 <TableCell>
                   <Button 
@@ -96,7 +116,7 @@ function Vehicles() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer></>}
     </Container>
   );
 }

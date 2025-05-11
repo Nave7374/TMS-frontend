@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Avatar, Button, CircularProgress, TextField } from '@mui/material';
-import axios from 'axios';
 
 function EditableProfile(){
   const [user, setUser] = useState(null);
@@ -8,21 +7,29 @@ function EditableProfile(){
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ username: '', email: '' });
 
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/user/profile', {
+    fetch('http://localhost:8080/api/user', {
+      method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
+        // 'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     })
-    .then((res) => {
-      setUser(res.data);
-      setForm({ username: res.data.username, email: res.data.email });
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setUser(data);
+      setForm({ username: data.username, email: data.email });
       setLoading(false);
     })
-    .catch((err) => {
-      console.error('Failed to fetch profile:', err);
+    .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
       setLoading(false);
     });
   }, []);
@@ -31,15 +38,29 @@ function EditableProfile(){
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = () => {
-    axios.put('http://localhost:8080/api/user/update', form, {
-      headers: { Authorization: `Bearer ${token}` }
+  const handleSave = (e) => {
+    e.preventDefault();
+    fetch('http://localhost:8080/api/user', {
+      method: 'PUT',
+      headers: {
+        // 'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(form),
     })
-    .then(res => {
-      setUser(res.data);
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setUser(data);
       setEditMode(false);
     })
-    .catch(err => console.error("Update failed", err));
+    .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
   };
 
   if (loading) return <CircularProgress />;

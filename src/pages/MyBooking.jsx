@@ -1,22 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Button, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
 
 const MyBookings = () => {
+
+  const {id} = useParams();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId'); // assuming userId is stored in localStorage
-    axios.get(`http://localhost:8080/api/bookings/user/${userId}`)
-      .then(response => {
-        setBookings(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching user bookings:', error);
-        setLoading(false);
-      });
+    
+    fetch(`http://localhost:8080/api/shipments/user/${id}`, {
+      method: 'GET',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      setBookings(data);
+      console.log(bookings);
+      
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -28,9 +46,9 @@ const MyBookings = () => {
       ) : bookings.length === 0 ? (
         <Typography>No bookings found.</Typography>
       ) : (
-        bookings.map((booking) => (
-          <Paper key={booking.id} elevation={3} sx={{ p: 2, mb: 2 }}>
-            <Typography variant="h6">Shipment ID: {booking.shipmentId}</Typography>
+        bookings.map((booking,index)=> (
+          <Paper key={index} elevation={3} sx={{ p: 2, mb: 2 }}>
+            <Typography variant="h6">Shipment ID: {booking.shipmentNumber}</Typography>
             <Typography>Origin: {booking.origin}</Typography>
             <Typography>Destination: {booking.destination}</Typography>
             <Typography>Status: {booking.status}</Typography>

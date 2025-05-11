@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { TextField, Button, Typography, Container, InputAdornment, InputLabel, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -43,23 +42,39 @@ function Signup() {
 
   function submit(e) {
     e.preventDefault();
-    try {
-      const response = axios.post('http://localhost:8080/api/auth/signup', formData);
-      alert("User registered successfully!"); // shows "User registered successfully!" if successful
-      navigate('/login'); // after signup, redirect to login page
-      setFormData({
-          firstname: '',
-          lastname: '',
-          phonenumber: '',
-          username: '',
-          email: '',
-          password: '',
-          role: ''
+    
+      fetch('http://localhost:8080/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      )
-    } catch (error) {
-      alert(error.response.data); // shows error message from backend
-    }
+        return response.text();
+      })
+      .then((data) => {
+        console.log(data);
+          setFormData({
+            firstname: '',
+            lastname: '',
+            phonenumber: '',
+            username: '',
+            email: '',
+            password: '',
+            role: ''
+          });
+          setCpassword('');
+          alert(data);
+          if(data==='User registered successfully!') navigate('/login'); // Redirect to home page
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Signup failed");
+      });
   }
 
   return (
@@ -101,7 +116,7 @@ function Signup() {
               <MenuItem value=""><em>None</em></MenuItem>
               <MenuItem value="admin">Admin</MenuItem>
               <MenuItem value="user">User</MenuItem>
-              <MenuItem value="driver">Driver</MenuItem>
+              {/* <MenuItem value="driver">Driver</MenuItem> */}
           </Select>
           <Button type="submit" variant="contained" style={{margin:"20px 0"}} color="primary" fullWidth>Sign Up</Button>  
         </form>

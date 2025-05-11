@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 function AddShipment() {
 
@@ -9,22 +9,37 @@ function AddShipment() {
     origin: '',
     destination: '',
     status: '',
-    vehicleType: ''
+    vehicleType: '',
+    shipmentDate:''
   });
 
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
+    fetch('http://localhost:8080/api/shipments', {
+      method: 'POST',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(shipment),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+      alert("Shipment added successfully!");
+      setShipment({ origin: '', destination: '', status: '', vehicleType: '', shipmentDate:'' }); // Reset form fields
+      navigate('/shipments'); // Redirect to shipments list
+    }).catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+      alert("Error adding shipment");
+    });
     // Post new shipment data to backend
-    axios.post('http://localhost:8080/api/shipments', shipment)
-      .then(() => {
-        navigate('/shipments'); // Redirect to shipments list
-      })
-      .catch((err) => {
-        alert(err);
-      });
   };
 
   function handleChange(e) {
@@ -57,6 +72,22 @@ function AddShipment() {
             name='destination'
             value={shipment.destination}
             onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Vehicle Type"
+            name='vehicleType'
+            variant="outlined"
+            value={shipment.vehicleType}
+            onChange={handleChange}
+            required
+          />
+          <DatePicker
+            label="Shipment Date"
+            name='shipmentDate'
+            value={shipment.shipmentDate}
+            onChange={handleChange}
+            renderInput={(params) => <TextField {...params} />}
             required
           />
           <TextField

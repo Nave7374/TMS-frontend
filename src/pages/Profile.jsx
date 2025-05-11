@@ -1,30 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Avatar, Button, CircularProgress } from '@mui/material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDriver,setIsDriver] = useState(false);
+  const [isUser,setIsUser] = useState(false);
+  // const token = localStorage.getItem('token');
 
-  const token = localStorage.getItem('token');
+  useEffect(()=>{
+    const username = JSON.parse(localStorage.getItem('user'));
+    console.log(username);
+    setUser(username);
+    console.log(user);
+    setIsDriver(username.role==='driver');
+    setIsUser(username.role==='user');
+    setLoading(false);
+  },[])
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/user/profile', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => {
-      setUser(res.data);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error('Failed to fetch profile:', err);
-      setLoading(false);
-    });
-  }, []);
+  // useEffect(() => {
+
+  //   fetch(`http://localhost:8080/api/users/username/${username.username}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       // 'Authorization': `Bearer ${token}`,
+  //       'Content-Type': 'application/json',
+  //     },
+  //   }).then((response)=>{
+  //     if (!response.ok) {
+  //       throw new Error('Network response was not ok');
+  //     }
+  //     return response.json();
+  //   }).then((data)=>{
+  //     console.log(data);
+  //     setUser(data);
+  //     setLoading(false);
+  //   }).catch((error)=>{
+  //     console.error('There was a problem with the fetch operation:', error);
+  //     setLoading(false);
+  //   });
+  //   //  Fetch user data from backend
+  // }, []);
 
   if (loading) {
     return <CircularProgress />;
@@ -39,27 +57,34 @@ const ProfilePage = () => {
     <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Avatar sx={{ width: 80, height: 80, mb: 2 }}>
-          {user?.username?.charAt(0).toUpperCase()}
+          {user.username.charAt(0).toUpperCase()}
         </Avatar>
         <Typography variant="h5" gutterBottom>
-          {user?.username}
+          {user.username}
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-          Name: {user?.firstName} {user?.lastName}
+          Name: {user.firstName} {user.lastName}
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-          Phone: {user?.phoneNumber}
+          Phone: {user.phoneNumber}
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-          Email: {user?.email}
+          Email: {user.email}
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-          Role: {user?.role}
+          Role: {user.role}
         </Typography>
 
         <Button sx={{ mt: 3 }} variant="contained" color="primary" onClick={handleEdit}>
           Edit Profile
         </Button>
+
+      {isUser && <>
+        <Button sx={{mt:3}} variant='contained' color='primary' onClick={()=> navigate(`/booking/${user.id}`)} >Book Shipment</Button>
+        <Button sx={{mt:3}} variant='contained' color='primary' onClick={()=> navigate(`/profile/mybookings/${user.id}`)} >MY Bookings</Button>
+      </>}
+      {isDriver && <></>}
+
       </Box>
     </Box>
   );

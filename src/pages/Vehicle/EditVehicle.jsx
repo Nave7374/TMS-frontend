@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function EditVehicleForm() {
@@ -16,26 +15,53 @@ function EditVehicleForm() {
       const navigate = useNavigate();
 
       useEffect(() => {
+
+        fetch(`http://localhost:8080/api/vehicles/${id}`, {
+          method: 'GET',
+          headers: {
+            // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        }).then((data) => {
+          console.log("Vehicle Data");
+          console.log(data);
+          setVehicle(data);
+        }).catch((error) => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+
         // Fetch the vehicle data from the backend using the ID
-        axios.get(`http://localhost:8080/api/vehicles/${id}`)
-          .then((res) => {
-            setVehicle(res.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
       }, [id]);
 
     function handleSubmit(e){
     e.preventDefault();
+
+    fetch(`http://localhost:8080/api/vehicles/${id}`, {
+      method: 'PUT',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(vehicle),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then((data) => {
+      console.log(data);
+      alert("Vehicle updated successfully!");
+      setVehicle({ model: '', status: '', company:'', year:'', registrationNumber:'',type:'' }); // Reset form fields
+      navigate('/vehicles')
+    }).catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
     // Update vehicle data on the backend
-    axios.put(`http://localhost:8080/api/vehicles/${id}`, vehicle)
-      .then(() => {
-        navigate('/vehicles'); // Redirect to vehicles list
-      })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   function handleChange(e) {
@@ -65,6 +91,7 @@ function EditVehicleForm() {
           <TextField
             label="Status"
             variant="outlined"
+            name="status"
             value={vehicle.status}
             onChange={handleChange}
             required
