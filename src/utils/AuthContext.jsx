@@ -39,6 +39,29 @@ export const AuthProvider = ({ children }) => {
     
   };
 
+  const Driverlogin =(UserData) =>{
+    console.log(UserData);
+    fetch(`http://localhost:8080/api/driver/username/${encodeURIComponent(UserData.username)}`, {
+      method: 'GET',
+      headers: {
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      if(!response.ok){
+        throw new Error("Network response Error");
+      }
+      return response.json();
+    }).then(data => {
+      console.log(data);
+      setUser(data);
+      localStorage.setItem('user', JSON.stringify(data));
+      console.log("Data Saved");
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
@@ -52,7 +75,7 @@ export const AuthProvider = ({ children }) => {
   const isDriver = user&&user.role === 'driver';
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, isDriver, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, isDriver, Driverlogin , login, logout }}>
       {children}
     </AuthContext.Provider>
   );

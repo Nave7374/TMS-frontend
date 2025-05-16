@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 function AddShipment() {
 
@@ -10,7 +13,7 @@ function AddShipment() {
     destination: '',
     status: '',
     vehicleType: '',
-    shipmentDate:''
+    shipmentDate:null
   });
 
   const navigate = useNavigate();
@@ -18,13 +21,21 @@ function AddShipment() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+  
+    const formattedShipment = {
+      ...shipment,
+      shipmentDate: shipment.shipmentDate
+        ? dayjs(shipment.shipmentDate).format('YYYY-MM-DD')
+        : null,
+    };
+
     fetch('http://localhost:8080/api/shipments', {
       method: 'POST',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(shipment),
+      body: JSON.stringify(formattedShipment),
     }).then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -33,7 +44,7 @@ function AddShipment() {
     }).then((data) => {
       console.log(data);
       alert("Shipment added successfully!");
-      setShipment({ origin: '', destination: '', status: '', vehicleType: '', shipmentDate:'' }); // Reset form fields
+      setShipment({ origin: '', destination: '', status: '', vehicleType: '', shipmentDate:null }); // Reset form fields
       navigate('/shipments'); // Redirect to shipments list
     }).catch((error) => {
       console.error('There was a problem with the fetch operation:', error);
@@ -41,6 +52,13 @@ function AddShipment() {
     });
     // Post new shipment data to backend
   };
+
+  function handleDateChange(newDate){
+    setShipment({
+      ...shipment,
+      shipmentDate:newDate
+    })
+  } 
 
   function handleChange(e) {
     const { name, value } = e.target;  
@@ -82,14 +100,14 @@ function AddShipment() {
             onChange={handleChange}
             required
           />
-          <DatePicker
-            label="Shipment Date"
-            name='shipmentDate'
-            value={shipment.shipmentDate}
-            onChange={handleChange}
-            renderInput={(params) => <TextField {...params} />}
-            required
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Shipment Date"
+              value={shipment.shipmentDate}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} required />}
+            />
+          </LocalizationProvider>
           <TextField
             label="Status"
             name='status'

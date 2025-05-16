@@ -27,7 +27,9 @@ function Vehicles() {
         return response.json();
       }).then((data) => {
         console.log(data);
-        setVehicles(data);
+        const sortedData = data.sort((a, b) => a.id - b.id);
+        console.log(sortedData);
+        setVehicles(sortedData);
         setLoading(false);
       }).catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
@@ -86,7 +88,7 @@ function Vehicles() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {vehicles.map((vehicle) => (
+              {vehicles.map((vehicle) => (
               <TableRow key={vehicle.id}>
                 <TableCell>{vehicle.id}</TableCell>
                 <TableCell>{vehicle.model}</TableCell>

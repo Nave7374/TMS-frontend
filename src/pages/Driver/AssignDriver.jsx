@@ -7,15 +7,17 @@ import {
   Button,
   Box
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function AssignVehicle() {
+function AssignDriver() {
     const {id} = useParams();
     const [vehicles, setVehicles] = useState([]);
     const [vehicleId, setVehicleId] = useState('');
 
+    const navigate = useNavigate();
+
   useEffect(() => {
-    fetch('http://localhost:8080/api/vehicles/status',{
+    fetch('http://localhost:8080/api/vehicles/status/assigned',{
         method:'GET',
         headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -38,10 +40,10 @@ function AssignVehicle() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const parameters = {
-        shipmentID:id,
+        driverID:id,
         vehicleID:vehicleId
     }
-    fetch('http://localhost:8080/api/vehicles/assign',{
+    fetch('http://localhost:8080/api/vehicles/assign/driver',{
         method:'POST',
         headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -52,11 +54,12 @@ function AssignVehicle() {
         if (!response.ok) {
             throw new Error("Assignment failed");
         }
-        return response.json();
+        return response.text();
     })
     .then(data => {
         console.log("Assignment successful:", data);
         // Optionally reset form or show success
+        navigate('/drivers');
     })
     .catch(error => {
         console.error("Error during assignment:", error);
@@ -67,13 +70,13 @@ function AssignVehicle() {
     <Container maxWidth="sm">
       <Box sx={{ mt: 5, p: 4, boxShadow: 3, borderRadius: 2 }}>
         <Typography variant="h5" gutterBottom>
-          Assign Vehicle to Shipment
+          Assign Vehicle to Driver
         </Typography>
 
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Select Shipment"
+            label="Select Driver"
             value={id}
             margin="normal"
             required
@@ -111,4 +114,4 @@ function AssignVehicle() {
   );
 };
 
-export default AssignVehicle;
+export default AssignDriver;

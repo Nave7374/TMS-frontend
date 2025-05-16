@@ -22,8 +22,12 @@ import ProtectedRoute from './components/protectedRoutes';
 import EditShipmentForm from './pages/Shipment/EditShipment';
 import AddShipment from './pages/Shipment/Addshipment';
 // import EditableProfile from './pages/EditProfile';
-import AssignVehicle from './pages/AssignVehicle';
-
+import AssignVehicle from './pages/Vehicle/AssignVehicle';
+import Driver from './pages/Driver/Driver';
+import AddDriver from './pages/Driver/AddDriver';
+import AssignDriver from './pages/Driver/AssignDriver';
+import Shipmenthistory from './pages/Driver/ShipmentHistory';
+import Currentshipment from './pages/Driver/CurrentShipment';
 
 function App() {
 
@@ -48,7 +52,12 @@ function App() {
               <Route path="/shipments/add" element={<AddShipment />} />
               <Route path="/shipments/edit/:id" element={<EditShipmentForm />} />
               <Route path="/users" element={<User />} />
+              <Route path='/drivers' element={<Driver />} />
+              <Route path='/drivers/add' element={<AddDriver />} />
+              <Route path='/drivers/vehicles/assign/:id' element={<AssignDriver />} />
             </Route>
+            <Route path='/currentshipment/:id' element={<Currentshipment />} />
+            <Route path="/shipmenthistory/:id" element={<Shipmenthistory />} />
             <Route path="/track" element={<TrackingPage />} />
             <Route path="/profile" element={<ProfilePage />}/>
             <Route path="/booking/:id" element={<BookingPage />} />

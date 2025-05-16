@@ -70,6 +70,7 @@ function Dashboard() {
           </Card>
         </Grid>
 
+        {/* User Card */}
         <Grid item xs={12} sm={6} md={4}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
@@ -83,6 +84,25 @@ function Dashboard() {
             <CardActions>
               <Button size="small" variant="contained" color="warning" onClick={() => navigate('/users')}>
                 Go to User Details
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+
+        {/* Driver Card */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent>
+              <Typography variant="h5" component="div" gutterBottom>
+                Driver Details
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                View and manage Drivers details.
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small" variant="contained" color="error" onClick={() => navigate('/drivers')}>
+                Go to Drivers Details
               </Button>
             </CardActions>
           </Card>

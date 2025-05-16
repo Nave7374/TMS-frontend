@@ -15,8 +15,8 @@ const ProfilePage = () => {
     console.log(username);
     setUser(username);
     console.log(user);
-    setIsDriver(username.role==='driver');
-    setIsUser(username.role==='user');
+    if(!username.role)setIsDriver(true);
+    else setIsUser(username.role==='user');
     setLoading(false);
   },[])
 
@@ -63,17 +63,17 @@ const ProfilePage = () => {
           {user.username}
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-          Name: {user.firstName} {user.lastName}
+          Name: {isDriver? user.firstname: user.firstName} {isDriver? user.lastname:user.lastName }
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
-          Phone: {user.phoneNumber}
+          Phone: {isDriver? user.phone:user?.phoneNumber}
         </Typography>
         <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
           Email: {user.email}
         </Typography>
-        <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
+        {!isDriver && <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
           Role: {user.role}
-        </Typography>
+        </Typography>}
 
         <Button sx={{ mt: 3 }} variant="contained" color="primary" onClick={handleEdit}>
           Edit Profile
@@ -83,8 +83,8 @@ const ProfilePage = () => {
         <Button sx={{mt:3}} variant='contained' color='primary' onClick={()=> navigate(`/booking/${user.id}`)} >Book Shipment</Button>
         <Button sx={{mt:3}} variant='contained' color='primary' onClick={()=> navigate(`/profile/mybookings/${user.id}`)} >MY Bookings</Button>
       </>}
-      {isDriver && <></>}
-
+      {isDriver && <><Button sx={{mt:3}} variant='contained' color='primary'onClick={()=>navigate(`/currentshipment/${user.id}`)}>Current Shipment</Button>
+        <Button sx={{mt:3}} variant='contained' color='primary' onClick={()=>navigate(`/shipmenthistory/${user.id}`)}>Shipment History</Button></> }
       </Box>
     </Box>
   );

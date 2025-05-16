@@ -15,7 +15,7 @@ function Login() {
   const [role , setRole] = useState("");
   const navigate = useNavigate();
   const [text,setText] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login , Driverlogin } = useContext(AuthContext);
 
   function handleChange(e){
     
@@ -31,7 +31,35 @@ function Login() {
       password: password,
       role: role
     }
-    fetch('http://localhost:8080/api/auth/login', {
+    if(role==="driver"){
+      fetch('http://localhost:8080/api/driver/login',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),  
+      }).then((response)=>{
+        if(!response.ok){
+          throw new Error("Network response Error");
+        }
+        return response.text();
+      }).then(data => {
+        console.log(data);
+        if (data==='Login Successfull!') {
+          Driverlogin({username,password,role}); // Call the login function from AuthContext
+          localStorage.setItem('token', data);
+          setisLogedin(true);
+          setText("Login Successfull");
+          navigate('/profile');
+        } 
+        else{
+          setText(data);
+        }
+      }).catch((error)=>{
+        console.error(error);
+      });
+    }else{
+      fetch('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,13 +75,12 @@ function Login() {
     .then((data) => {
       console.log(data);
       if (data==='Login successful!') {
+        login({username,password,role}); // Call the login function from AuthContext
         localStorage.setItem('token', data);
         setisLogedin(true);
         setText("Login successful");
         role==='admin'&& navigate('/dashboard');
         role==='user' && navigate('/profile');
-        role=== 'driver' && navigate('/profile');
-        login({username,password,role}); // Call the login function from AuthContext
       } else {
         setText(data);
       }
@@ -62,6 +89,7 @@ function Login() {
       console.log(error);
       setText("Invalid credentials");
     });
+    }
   }
 
   return (
@@ -90,7 +118,7 @@ function Login() {
             <MenuItem value=""><em>None</em></MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
             <MenuItem value="user">User</MenuItem>
-            {/* <MenuItem value="driver">Driver</MenuItem> */}
+            <MenuItem value="driver">Driver</MenuItem>
           </Select>
         </FormControl>
         <Button type='submit' variant="contained" color="primary" style={{marginTop:"10px"}} fullWidth>Login</Button>

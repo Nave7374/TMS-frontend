@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { LoginContext } from '../utils/context';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,11 @@ function Header(){
     localStorage.removeItem('token'); // Clear the token from local storage
     setisLogedin(false);
   };
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem('user'));
+    setisLogedin(user ? true : false);
+  },[]);
 
   function handleLogin() {
     navigate('/login');
