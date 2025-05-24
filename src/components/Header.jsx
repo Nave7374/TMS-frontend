@@ -20,7 +20,7 @@ function Header(){
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem('user'));
     setisLogedin(user ? true : false);
-  },[]);
+  },[setisLogedin]);
 
   function handleLogin() {
     navigate('/login');

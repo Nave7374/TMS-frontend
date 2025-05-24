@@ -42,7 +42,7 @@ const MyBookings = () => {
       console.error('There was a problem with the fetch operation:', error);
       setLoading(false);
     });
-  }, []);
+  }, [bookings, id]);
 
   useEffect(()=>{
     fetch(`http://localhost:8080/api/users/shipmenthistory/${id}`,{
@@ -71,7 +71,7 @@ const MyBookings = () => {
       console.error(error)
       setShipmenthistoryloading(false);
   });
-  },[])
+  },[shipmenthistory, id])
 
   return (
     <Box p={3}>

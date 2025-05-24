@@ -35,7 +35,7 @@ function AssignDriver() {
     }).catch(error => {
         console.error(error);
     })
-  }, []);
+  }, [vehicles]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

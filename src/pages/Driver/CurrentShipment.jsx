@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Currentshipment = ()=>{
 

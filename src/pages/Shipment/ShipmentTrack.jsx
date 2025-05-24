@@ -30,35 +30,36 @@ function ShipmentTrack(){
 
     useEffect(()=>{
         fetchLocation();
-    },[]);
+    },[fetchLocation]);
 
 
-    const fetchLocation = () => {
-    fetch(`http://localhost:8080/api/tracking/get/${id}`, {
-      method: 'GET',
-      headers: {
-        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
+    const fetchLocation = useCallback(() => {
+  fetch(`http://localhost:8080/api/tracking/get/${id}`, {
+    method: 'GET',
+    headers: {
+      // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response Error');
+      console.log(response);
+      console.log(response.status);
+      if (response.status === 204) {
+        alert('Vehicle Location Not updated yet');
+        return;
+      }
+      return response.json();
     })
-      .then(response => {
-        if (!response.ok) throw new Error('Network response Error');
-        console.log(response);
-        console.log(response.status);
-        if(response.status===204) {
-          alert('Vehicle Location Not updated yet');
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-        setLocation({ lat: data.latitude, lng: data.longitude });
-        setVehicle(data?.shipment?.vehicle);
-        setLoading(false);
-      })
-      .catch(error => console.error(error));
-  };
+    .then(data => {
+      console.log(data);
+      setLocation({ lat: data.latitude, lng: data.longitude });
+      setVehicle(data?.shipment?.vehicle);
+      setLoading(false);
+    })
+    .catch(error => console.error(error));
+}, [id, setLocation, setVehicle, setLoading]);  // <-- include dependencies used inside
+
 
   const startTracking = () => {
     fetchLocation(); // Initial
