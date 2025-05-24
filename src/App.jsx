@@ -13,21 +13,23 @@ import ShipmentPage from './pages/Shipment/Shipment';
 // import EditShipmentForm from './pages/Shipment/EditShipment';
 // import AddShipment from './pages/Shipment/Addshipment';
 import TrackingPage from './pages/trackingpage';
-import ProfilePage from './pages/Profile';
-import BookingPage from './pages/Bookingpage';
-import User from './pages/Users';
-import MyBookings from './pages/MyBooking';
+import ProfilePage from './pages/Users/Profile';
+import BookingPage from './pages/Users/Bookingpage';
+import User from './pages/Users/Users';
+import MyBookings from './pages/Users/MyBooking';
 import { AuthProvider } from './utils/AuthContext';
 import ProtectedRoute from './components/protectedRoutes';
-import EditShipmentForm from './pages/Shipment/EditShipment';
+// import EditShipmentForm from './pages/Shipment/EditShipment';
 import AddShipment from './pages/Shipment/Addshipment';
-// import EditableProfile from './pages/EditProfile';
+import EditProfile from './pages/Users/EditProfile';
 import AssignVehicle from './pages/Vehicle/AssignVehicle';
 import Driver from './pages/Driver/Driver';
 import AddDriver from './pages/Driver/AddDriver';
 import AssignDriver from './pages/Driver/AssignDriver';
 import Shipmenthistory from './pages/Driver/ShipmentHistory';
 import Currentshipment from './pages/Driver/CurrentShipment';
+import EditDriver from './pages/Driver/EditDriver';
+import ShipmentTrack from './pages/Shipment/ShipmentTrack';
 
 function App() {
 
@@ -50,10 +52,12 @@ function App() {
               <Route path="/shipments" element={<ShipmentPage />} />
               <Route path="/shipments/vehicles/assign/:id" element={ <AssignVehicle />}  />
               <Route path="/shipments/add" element={<AddShipment />} />
-              <Route path="/shipments/edit/:id" element={<EditShipmentForm />} />
+              {/* <Route path="/shipments/edit/:id" element={<EditShipmentForm />} /> */}
+              <Route path="/shipments/track/:id" element={<ShipmentTrack />} />
               <Route path="/users" element={<User />} />
               <Route path='/drivers' element={<Driver />} />
               <Route path='/drivers/add' element={<AddDriver />} />
+              <Route path='drivers/edit/:id' element={<EditDriver />} />
               <Route path='/drivers/vehicles/assign/:id' element={<AssignDriver />} />
             </Route>
             <Route path='/currentshipment/:id' element={<Currentshipment />} />
@@ -63,7 +67,7 @@ function App() {
             <Route path="/booking/:id" element={<BookingPage />} />
             
             <Route path="/profile/mybookings/:id" element={<MyBookings />} />
-            {/* <Route path="/profile/edit" element={<EditableProfile />} /> */}
+            <Route path="/profile/edit/:id" element={<EditProfile />} />
           </Routes>    
         </LoginContext.Provider>
       </AuthProvider>

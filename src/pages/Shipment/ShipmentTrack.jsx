@@ -1,32 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Box, Typography, Button, CircularProgress, TextField } from '@mui/material';
 
-const containerStyle = {
-  width: '100%',
-  height: '500px',
-};
+function ShipmentTrack(){
 
-const defaultCenter = {
-  lat: 12.9716,
-  lng: 77.5946,
-};
+    const {id} = useParams();
 
-function TrackingPage() {
-  const [shipmentid, setShipmentid] = useState('');
-  const [location, setLocation] = useState(null);
-  const [vehicle, setVehicle] = useState(null);
-  const [tracking, setTracking] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [intervalId, setIntervalId] = useState(null);
-  const [appear, setAppear] = useState(false);
+    const containerStyle = {
+    width: '100%',
+    height: '500px',
+    };
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyBJJznBv5mvYDMAiiM_UL2KottmR-X0ZhE', // Replace with your key
-  });
+    const defaultCenter = {
+    lat: 12.9716,
+    lng: 77.5946,
+    };
 
-  const fetchLocation = () => {
-    fetch(`http://localhost:8080/api/tracking/get/${shipmentid}`, {
+    const [location, setLocation] = useState(null);
+    const [vehicle, setVehicle] = useState(null);
+    const [tracking, setTracking] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [intervalId, setIntervalId] = useState(null);
+
+
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: 'AIzaSyBJJznBv5mvYDMAiiM_UL2KottmR-X0ZhE', // Replace with your key
+    });
+
+    useEffect(()=>{
+        fetchLocation();
+    },[]);
+
+
+    const fetchLocation = () => {
+    fetch(`http://localhost:8080/api/tracking/get/${id}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -48,7 +56,6 @@ function TrackingPage() {
         setLocation({ lat: data.latitude, lng: data.longitude });
         setVehicle(data?.shipment?.vehicle);
         setLoading(false);
-        setAppear(true);
       })
       .catch(error => console.error(error));
   };
@@ -66,32 +73,10 @@ function TrackingPage() {
     setTracking(false);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    fetchLocation();
-  };
-
   return (
     <Box sx={{ padding: 2 }}>
-      {!appear ? (
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Enter Shipment Number"
-            name="shipmentid"
-            value={shipmentid}
-            onChange={(e) => setShipmentid(e.target.value)}
-            variant="outlined"
-            required
-          />
-          <br />
-          <Button sx={{ mt: 3 }} type="submit" variant="contained" color="primary">
-            Track
-          </Button>
-        </form>
-      ) : (
         <Box>
-          {loading || !isLoaded ? (
+          {loading ? (
             <CircularProgress />
           ) : (
             <GoogleMap
@@ -128,9 +113,9 @@ function TrackingPage() {
             )}
           </Box>
         </Box>
-      )}
     </Box>
   );
+
 }
 
-export default TrackingPage;
+export default ShipmentTrack;

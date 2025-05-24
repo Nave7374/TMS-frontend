@@ -87,7 +87,7 @@ function AddVehicleForm() {
             onChange={handleChange} 
             required
           />
-          <Select name="type"  fullWidth displayEmpty value={vehicle.type} onChange={handleChange} sx={{ mt: 2 }}>
+          <Select name="type"  fullWidth displayEmpty value={vehicle.type} onChange={handleChange} sx={{ mt: 2 }} required>
             <MenuItem value="" disabled>Select Vehicle Type</MenuItem>
             <MenuItem value="Truck">Truck</MenuItem>
             <MenuItem value="Van">Van</MenuItem>

@@ -9,16 +9,23 @@ const ProfilePage = () => {
   const [isDriver,setIsDriver] = useState(false);
   const [isUser,setIsUser] = useState(false);
   // const token = localStorage.getItem('token');
+ 
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    console.log('Stored User:', storedUser);
 
-  useEffect(()=>{
-    const username = JSON.parse(localStorage.getItem('user'));
-    console.log(username);
-    setUser(username);
-    console.log(user);
-    if(!username.role)setIsDriver(true);
-    else setIsUser(username.role==='user');
-    setLoading(false);
-  },[])
+    setUser(storedUser);
+
+    if (!storedUser?.role) {
+      setIsDriver(true);
+    } else {
+      setIsUser(storedUser?.role === 'user');
+    }
+    if (storedUser) {
+      setLoading(false);
+    }
+  }, []);
+
 
   // useEffect(() => {
 
@@ -49,8 +56,8 @@ const ProfilePage = () => {
   }
 
   function handleEdit() {
-    // navigate('/profile/edit', { state: { user } });
-    alert('Edit Profile functionality is not implemented yet.');
+    navigate(`/profile/edit/${user.id}`);
+    // alert('Edit Profile functionality is not implemented yet.');
   }
 
   return (
@@ -75,9 +82,9 @@ const ProfilePage = () => {
           Role: {user.role}
         </Typography>}
 
-        <Button sx={{ mt: 3 }} variant="contained" color="primary" onClick={handleEdit}>
+        {!isDriver && <Button sx={{ mt: 3 }} variant="contained" color="primary" onClick={handleEdit}>
           Edit Profile
-        </Button>
+        </Button>}
 
       {isUser && <>
         <Button sx={{mt:3}} variant='contained' color='primary' onClick={()=> navigate(`/booking/${user.id}`)} >Book Shipment</Button>

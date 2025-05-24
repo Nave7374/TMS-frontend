@@ -11,11 +11,11 @@ const ProtectedRoute = ({ requiredRole }) => {
   }
 
   if (requiredRole === 'admin' && !isAdmin) {
-    return <Navigate to="/" />;
+    return <Navigate to="/profile" />;
   }
 
   if (requiredRole === 'driver' && !isDriver) {
-    return <Navigate to="/" />;
+    return <Navigate to="/profile" />;
   }
 
   return <Outlet />;

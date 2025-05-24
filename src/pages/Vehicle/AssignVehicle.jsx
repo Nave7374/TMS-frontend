@@ -7,13 +7,13 @@ import {
   Button,
   Box
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function AssignVehicle() {
     const {id} = useParams();
     const [vehicles, setVehicles] = useState([]);
     const [vehicleId, setVehicleId] = useState('');
-
+    const navigate = useNavigate();
   useEffect(() => {
     fetch('http://localhost:8080/api/vehicles/status/available',{
         method:'GET',
@@ -56,6 +56,8 @@ function AssignVehicle() {
     })
     .then(data => {
         console.log("Assignment successful:", data);
+        alert(data);
+        navigate('/shipments');
         // Optionally reset form or show success
     })
     .catch(error => {
@@ -91,7 +93,7 @@ function AssignVehicle() {
           >
             {vehicles.map((vehicle) => (
               <MenuItem key={vehicle.id} value={vehicle.id}>
-                #{vehicle.id} - {vehicle.registrationNumber}
+                #{vehicle.id} - {vehicle.registrationNumber} - {vehicle.type}
               </MenuItem>
             ))}
           </TextField>

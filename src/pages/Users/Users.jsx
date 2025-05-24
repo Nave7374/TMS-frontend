@@ -35,21 +35,22 @@ function User(){
         }
       )};
 
-    const deleteUser = async (userId) => {
-        if (!window.confirm('Are you sure you want to delete this user?')) return;
+    function deleteUser(userId) {
           fetch(`http://localhost:8080/api/users/${userId}`,{
+            method:'DELETE',
               headers:{
-                  // 'Authorization': `Bearer ${localStorage.getItem('token')}` //
+                  // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                  'Content-Type': 'application/json',
           }}).then(response=>{
             if(!response.ok){
               throw new Error('Network Response Error');
             }
-            return response.json();
+            return response.text();
           }).then(data=>{
+            alert(data);
           setUsers(users.filter(user => user.id !== userId));
-          console.log(data);
         }).catch(error =>{
-          console.error('Error deleting user:', error);
+          console.error( error);
         })
       };
 

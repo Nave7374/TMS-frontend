@@ -45,18 +45,18 @@ function Shipmenthistory(){
               <TableCell>Destination</TableCell>
               <TableCell>ShipmetID</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>VehicleNo</TableCell>
+              {/* <TableCell>VehicleNo</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {historys.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
+            {historys.map((item,index) => (
+              <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>{item.origin}</TableCell>
                 <TableCell>{item.destination}</TableCell>
                 <TableCell>{item.shipmentnumber}</TableCell>
                 <TableCell>{item.date.substring(0,10)}</TableCell>
-                <TableCell>{item.vehicleno}</TableCell>
+                {/* <TableCell>{item.vehicleno}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>

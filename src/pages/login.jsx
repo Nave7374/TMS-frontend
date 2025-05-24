@@ -78,6 +78,7 @@ function Login() {
         login({username,password,role}); // Call the login function from AuthContext
         localStorage.setItem('token', data);
         setisLogedin(true);
+        console.log("Running");
         setText("Login successful");
         role==='admin'&& navigate('/dashboard');
         role==='user' && navigate('/profile');

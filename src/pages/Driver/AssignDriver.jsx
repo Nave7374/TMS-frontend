@@ -94,7 +94,7 @@ function AssignDriver() {
           >
             {vehicles.map((vehicle) => (
               <MenuItem key={vehicle.id} value={vehicle.id}>
-                #{vehicle.id} - {vehicle.registrationNumber}
+                #{vehicle.id} - {vehicle.registrationNumber} {vehicle.type}
               </MenuItem>
             ))}
           </TextField>

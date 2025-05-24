@@ -34,7 +34,7 @@ function Driver(){
     },[]);
 
     function handleDelete(id){
-        fetch('',{
+        fetch(`http://localhost:8080/api/driver/${id}`,{
             method:'DELETE',
             headers:{
                  // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -46,7 +46,7 @@ function Driver(){
             }
             return response.text();
         }).then(data=>{
-            console.log(data);
+            alert(data);
             setDrivers(drivers.filter(driver => driver.id!==id));
         }).catch(error=>{
             console.error(error);
@@ -96,14 +96,14 @@ function Driver(){
                 <TableCell>{driver.username}</TableCell>
                 <TableCell>{driver.vehicle?driver.vehicle.registrationNumber:<Button variant="outlined" color="success" onClick={()=>navigate(`vehicles/assign/${driver.id}`)}>Assign</Button>}</TableCell>
                  <TableCell>
-                  {/* <Button 
+                  <Button 
                     variant="outlined" 
                     color="primary" 
                     startIcon={<EditIcon />}
                     onClick={() => navigate(`/drivers/edit/${driver.id}`)}
                   >
                     Edit
-                  </Button> */}
+                  </Button>
                   <Button 
                     variant="outlined" 
                     color="secondary" 

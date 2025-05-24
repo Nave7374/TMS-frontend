@@ -3,12 +3,14 @@ import { Box, Button, Container, MenuItem, Select, TextField, Typography } from 
 // import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // import dayjs from "dayjs";
 
 
 
 function AddDriver(){
 
+    const navigate = useNavigate();
     const [driver,setDriver] = useState({
         firstname:'',
         lastname:'',
@@ -74,6 +76,7 @@ function AddDriver(){
                 password:'',
             })
             alert("Driver Added Successfully!");
+            navigate("/drivers");
         }).catch(error => {
             console.error(error);
         })

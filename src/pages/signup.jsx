@@ -114,7 +114,7 @@ function Signup() {
               required
               >
               <MenuItem value=""><em>None</em></MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
+              {/* <MenuItem value="admin">Admin</MenuItem> */}
               <MenuItem value="user">User</MenuItem>
               {/* <MenuItem value="driver">Driver</MenuItem> */}
           </Select>

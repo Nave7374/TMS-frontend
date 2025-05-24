@@ -8,6 +8,8 @@ const MyBookings = () => {
   const {id} = useParams();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [shipmenthistory , setShipmenthistory] = useState([]);
+  const [shipmenthistoryloading,setShipmenthistoryloading] = useState(true);
 
   useEffect(() => {
     
@@ -19,16 +21,21 @@ const MyBookings = () => {
       },
     })
     .then((response) => {
+      // console.log(response);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       return response.json();
     })
     .then((data) => {
+        // const filtered = data.filter(item => typeof item === 'object' && item.shipmentNumber);
+        // console.log(filtered);
+        // setBookings(filtered);
       console.log(data);
-      setBookings(data);
+      data.forEach((item, i) => console.log(i, typeof item, item));
+      const newdata = data;
+      setBookings(newdata);
       console.log(bookings);
-      
       setLoading(false);
     })
     .catch((error) => {
@@ -37,13 +44,42 @@ const MyBookings = () => {
     });
   }, []);
 
+  useEffect(()=>{
+    fetch(`http://localhost:8080/api/users/shipmenthistory/${id}`,{
+      method:'GET',
+      headers:{
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      // console.log(response);
+      if(!response.ok){
+        throw new Error("Network response error");
+      }
+      return response.json();
+    }).then(data => {
+      const update = data;
+      setShipmenthistoryloading(false);
+      setShipmenthistory(update);
+      // console.log(update);
+      // console.log("Update");
+      // console.log(shipmenthistory);
+      console.log("Shipmenthistory");
+      console.log(shipmenthistory);
+      // console.log("Updated Shipmenthistory");
+    }).catch(error => {
+      console.error(error)
+      setShipmenthistoryloading(false);
+  });
+  },[])
+
   return (
     <Box p={3}>
       <Typography variant="h4" gutterBottom>My Bookings</Typography>
 
-      {loading ? (
+      {loading ? 
         <CircularProgress />
-      ) : bookings.length === 0 ? (
+       : bookings.length === 0 ? (
         <Typography>No bookings found.</Typography>
       ) : (
         bookings.map((booking,index)=> (
@@ -64,6 +100,16 @@ const MyBookings = () => {
           </Paper>
         ))
       )}
+      {
+        !shipmenthistoryloading && shipmenthistory.map((item,index) => (
+          <Paper key={index} elevation={3} sx={{p:2 , mb:2}}>
+            <Typography variant='h5'>Shipment Id : {item.shipmentnumber}</Typography>
+            <Typography>Origin: {item.origin}</Typography>
+            <Typography>Destination: {item.destination}</Typography>
+            <Typography>Date : {new Date(item.date).toLocaleDateString()}</Typography>
+          </Paper>
+        ))
+      }
     </Box>
   );
 };

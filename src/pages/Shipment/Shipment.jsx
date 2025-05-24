@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 // import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
+import ShareLocationIcon from '@mui/icons-material/ShareLocation';
 
 function ShipmentPage() {
   const [shipments, setShipments] = useState([]);
@@ -46,12 +47,12 @@ function ShipmentPage() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();
-    }).then(() => {
-      alert("Shipment deleted successfully!");
+      return response.text();
+    }).then((data) => {
+      alert(data);
       setShipments(shipments.filter(shipment => shipment.id !== id)); // Update state after delete
     }).catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error(error);
     });
   };
 
@@ -96,14 +97,14 @@ function ShipmentPage() {
                 <TableCell>{shipment.weight}</TableCell>
                 <TableCell>{shipment.vehicle?shipment.vehicle.registrationNumber:<Button variant="outlined" color="success" onClick={()=>navigate(`vehicles/assign/${shipment.id}`)}>Assign</Button>}</TableCell>
                  <TableCell>
-                  {/*<Button 
+                  <Button 
                     variant="outlined" 
                     color="primary" 
-                    startIcon={<EditIcon />}
-                    onClick={() => navigate(`/shipments/edit/${shipment.id}`)}
+                    startIcon={<ShareLocationIcon />}
+                    onClick={() => navigate(`/shipments/track/${shipment.shipmentNumber}`)}
                   >
-                    Edit
-                  </Button>*/}
+                    Track
+                  </Button>
                   <Button 
                     variant="outlined" 
                     color="secondary" 
@@ -111,7 +112,7 @@ function ShipmentPage() {
                     onClick={() => handleDelete(shipment.id)}
                   >
                     Delete
-                  </Button>
+                  </Button> 
                 </TableCell> 
               </TableRow>
             ))}
