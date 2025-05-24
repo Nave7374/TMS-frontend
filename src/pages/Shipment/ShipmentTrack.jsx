@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { useCallback } from "react";
 
 function ShipmentTrack(){
 
@@ -27,11 +28,6 @@ function ShipmentTrack(){
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: 'AIzaSyBJJznBv5mvYDMAiiM_UL2KottmR-X0ZhE', // Replace with your key
     });
-
-    useEffect(()=>{
-        fetchLocation();
-    },[fetchLocation]);
-
 
     const fetchLocation = useCallback(() => {
   fetch(`http://localhost:8080/api/tracking/get/${id}`, {
@@ -60,7 +56,10 @@ function ShipmentTrack(){
     .catch(error => console.error(error));
 }, [id, setLocation, setVehicle, setLoading]);  // <-- include dependencies used inside
 
-
+ useEffect(()=>{
+        fetchLocation();
+    },[fetchLocation]);
+    
   const startTracking = () => {
     fetchLocation(); // Initial
     const id = setInterval(fetchLocation, 5000); // Poll every 5 sec
