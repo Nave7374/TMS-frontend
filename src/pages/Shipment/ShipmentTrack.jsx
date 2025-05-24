@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
-import { Box, Typography, Button, CircularProgress, TextField } from '@mui/material';
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
 
 function ShipmentTrack(){
 
@@ -56,6 +56,7 @@ function ShipmentTrack(){
         setLocation({ lat: data.latitude, lng: data.longitude });
         setVehicle(data?.shipment?.vehicle);
         setLoading(false);
+        isLoaded;
       })
       .catch(error => console.error(error));
   };

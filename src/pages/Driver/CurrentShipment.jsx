@@ -7,7 +7,7 @@ const Currentshipment = ()=>{
     const [Shipment,setShipment] = useState(null);
     const [vehicle , setVehicle] = useState(null);
     const [loading,setLoading] = useState(true);
-    const [driver,setDriver] = useState(null);
+    // const [driver,setDriver] = useState(null);
     const [updating,setUpdating] = useState(false);
     const [intervalId,setIntervalId] = useState(null);
     const [latitude , setLatitude] = useState(null);
@@ -15,7 +15,7 @@ const Currentshipment = ()=>{
     const [location,setLocation] = useState(null);
     const navigate = useNavigate();
 
-    const {id} = useParams();
+    // const {id} = useParams();
 
     useEffect(()=>{
         // fetch(`http://localhost:8080/api/driver/${id}`,{})
@@ -28,7 +28,7 @@ const Currentshipment = ()=>{
         console.log(vehicle);
         setLoading(false);
         console.log(shipment);
-        setDriver(driver);
+        // setDriver(driver);
     },[]);
 
     const depositeLocation = () => {
