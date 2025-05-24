@@ -56,7 +56,6 @@ function ShipmentTrack(){
         setLocation({ lat: data.latitude, lng: data.longitude });
         setVehicle(data?.shipment?.vehicle);
         setLoading(false);
-        isLoaded;
       })
       .catch(error => console.error(error));
   };
@@ -77,7 +76,7 @@ function ShipmentTrack(){
   return (
     <Box sx={{ padding: 2 }}>
         <Box>
-          {loading ? (
+          {loading || !isLoaded ? (
             <CircularProgress />
           ) : (
             <GoogleMap
