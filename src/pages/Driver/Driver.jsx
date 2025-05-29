@@ -31,7 +31,7 @@ function Driver(){
         }).catch(error => {
             console.error(error);
         });
-    },[]);
+    },[setDrivers]);
 
     function handleDelete(id){
         fetch(`http://localhost:8080/api/driver/${id}`,{

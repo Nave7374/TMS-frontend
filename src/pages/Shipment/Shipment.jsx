@@ -33,7 +33,7 @@ function ShipmentPage() {
       console.error('There was a problem with the fetch operation:', error);
     });
     // Fetch the list of shipments from backend
-  }, []);
+  }, [setShipments]);
 
   // Handle delete shipment
   const handleDelete = (id) => {
@@ -73,7 +73,7 @@ function ShipmentPage() {
       >
         Add New Shipment
       </Button>
-
+      {shipments.length===0 ? <Typography>No Shipments Booked</Typography> : <>
       <TableContainer>
         <Table>
           <TableHead>
@@ -118,7 +118,7 @@ function ShipmentPage() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer></>}
+      </TableContainer></>}</>}
     </Container>
   );
 }

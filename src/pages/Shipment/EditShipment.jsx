@@ -33,7 +33,7 @@ function EditShipmentForm() {
       console.error('There was a problem with the fetch operation:', error);
     });
     // Fetch the shipment data from the backend using the ID
-  }, [id]);
+  }, [setShipment]);
 
     function handleSubmit(e) {
     e.preventDefault();

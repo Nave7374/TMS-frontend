@@ -24,7 +24,7 @@ const ProfilePage = () => {
     if (storedUser) {
       setLoading(false);
     }
-  }, []);
+  }, [setUser]);
 
 
   // useEffect(() => {

@@ -42,7 +42,7 @@ const MyBookings = () => {
       console.error('There was a problem with the fetch operation:', error);
       setLoading(false);
     });
-  }, [bookings, id]);
+  }, [setBookings]);
 
   useEffect(()=>{
     fetch(`http://localhost:8080/api/users/shipmenthistory/${id}`,{
@@ -71,7 +71,7 @@ const MyBookings = () => {
       console.error(error)
       setShipmenthistoryloading(false);
   });
-  },[shipmenthistory, id])
+  },[setShipmenthistory])
 
   return (
     <Box p={3}>
@@ -100,6 +100,7 @@ const MyBookings = () => {
           </Paper>
         ))
       )}
+      <Typography>Shipment History</Typography>
       {
         !shipmenthistoryloading && shipmenthistory.map((item,index) => (
           <Paper key={index} elevation={3} sx={{p:2 , mb:2}}>

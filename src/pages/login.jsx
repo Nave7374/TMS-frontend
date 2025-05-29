@@ -80,8 +80,7 @@ function Login() {
         setisLogedin(true);
         console.log("Running");
         setText("Login successful");
-        role==='admin'&& navigate('/dashboard');
-        role==='user' && navigate('/profile');
+        role==='admin'? navigate('/dashboard') : navigate('/profile');
       } else {
         setText(data);
       }

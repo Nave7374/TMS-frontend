@@ -32,7 +32,7 @@ function EditVehicleForm() {
         });
 
         // Fetch the vehicle data from the backend using the ID
-      }, [id]);
+      }, [setVehicle]);
 
     function handleSubmit(e){
     e.preventDefault();

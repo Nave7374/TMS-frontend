@@ -29,7 +29,7 @@ const Currentshipment = ()=>{
         setLoading(false);
         console.log(shipment);
         // setDriver(driver);
-    },[]);
+    },[setShipment]);
 
     const depositeLocation = () => {
         if(!navigator.geolocation){

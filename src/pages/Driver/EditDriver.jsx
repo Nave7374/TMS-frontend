@@ -37,7 +37,7 @@ function EditDriver() {
         setLoading(false);
       })
       .catch((error) => console.error(error));
-  }, [id]);
+  }, [setDriver]);
 
   function handleFieldChange(e) {
     setSelectedField(e.target.value);

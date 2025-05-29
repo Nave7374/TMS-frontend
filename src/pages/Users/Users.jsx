@@ -10,10 +10,6 @@ function User(){
     const [loading,setLoading] = useState(true);
     const [users, setUsers] = useState([]);
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
-
     const fetchUsers = async () => {
           fetch('http://localhost:8080/api/users',{
             method:'GET',
@@ -34,6 +30,11 @@ function User(){
           console.error('Error fetching users:', error);
         }
       )};
+
+      
+    useEffect(() => {
+        fetchUsers();
+    }, [setUsers]);
 
     function deleteUser(userId) {
           fetch(`http://localhost:8080/api/users/${userId}`,{
