@@ -35,14 +35,15 @@ const MyBookings = () => {
       data.forEach((item, i) => console.log(i, typeof item, item));
       const newdata = data;
       setBookings(newdata);
-      console.log(bookings);
+      console.log(newdata);
+      // console.log(bookings);
       setLoading(false);
     })
     .catch((error) => {
       console.error('There was a problem with the fetch operation:', error);
       setLoading(false);
     });
-  }, [setBookings]);
+  },[id]);
 
   useEffect(()=>{
     fetch(`http://localhost:8080/api/users/shipmenthistory/${id}`,{
@@ -60,18 +61,18 @@ const MyBookings = () => {
     }).then(data => {
       const update = data;
       setShipmenthistoryloading(false);
+      console.log("Shipmenthistory");
       setShipmenthistory(update);
-      // console.log(update);
+      console.log(update);
       // console.log("Update");
       // console.log(shipmenthistory);
-      console.log("Shipmenthistory");
-      console.log(shipmenthistory);
+      // console.log(shipmenthistory);
       // console.log("Updated Shipmenthistory");
     }).catch(error => {
       console.error(error)
       setShipmenthistoryloading(false);
   });
-  },[setShipmenthistory])
+  },[id])
 
   return (
     <Box p={3}>
