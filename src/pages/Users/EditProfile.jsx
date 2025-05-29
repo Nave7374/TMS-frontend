@@ -32,10 +32,10 @@ function EditProfile(){
       setLoading(false);
     })
     .catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error(error);
       setLoading(false);
     });
-  }, [setUser]);
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

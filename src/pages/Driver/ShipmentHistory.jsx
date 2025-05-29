@@ -26,7 +26,7 @@ function Shipmenthistory(){
             setLoading(false);
             setHistorys(data);
         }).catch(error => console.error(error))
-    },[setHistorys]);
+    },[id]);
 
     return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>

@@ -31,7 +31,7 @@ function AssignDriver() {
     }).then(data=>{
         console.log(data);
         setVehicles(data);
-        console.log(vehicles);
+        // console.log(vehicles);
     }).catch(error => {
         console.error(error);
     })
