@@ -70,12 +70,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthenticated = user !== null;
-
+  const isLogedin = localStorage.getItem('isLogedin')==="true";
   const isAdmin = user&&user.role === 'admin';
   const isDriver = user&&user.role === 'driver';
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, isDriver, Driverlogin , login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated,isLogedin, isAdmin, isDriver, Driverlogin , login, logout }}>
       {children}
     </AuthContext.Provider>
   );

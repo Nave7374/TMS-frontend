@@ -30,6 +30,9 @@ import Shipmenthistory from './pages/Driver/ShipmentHistory';
 import Currentshipment from './pages/Driver/CurrentShipment';
 import EditDriver from './pages/Driver/EditDriver';
 import ShipmentTrack from './pages/Shipment/ShipmentTrack';
+import ShipmentHistory from './pages/Shipment/ShipmentHistory';
+import ForgetPassword from './pages/ForgetPassword';
+import ResetPassword from './pages/Resetpassword';
 
 function App() {
 
@@ -43,31 +46,36 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Login />} />
+            <Route path='/forgetpassword' element={<ForgetPassword />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
             <Route path="/signup" element={<Signup />} />
-            <Route element={<ProtectedRoute requiredRole="admin" />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/vehicles" element={<Vehicles />} />
-              <Route path="/vehicles/add" element={<AddVehicleForm />} />
-              <Route path="/vehicles/edit/:id" element={<EditVehicleForm />} />
-              <Route path="/shipments" element={<ShipmentPage />} />
-              <Route path="/shipments/vehicles/assign/:id" element={ <AssignVehicle />}  />
-              <Route path="/shipments/add" element={<AddShipment />} />
-              {/* <Route path="/shipments/edit/:id" element={<EditShipmentForm />} /> */}
-              <Route path="/shipments/track/:id" element={<ShipmentTrack />} />
-              <Route path="/users" element={<User />} />
-              <Route path='/drivers' element={<Driver />} />
-              <Route path='/drivers/add' element={<AddDriver />} />
-              <Route path='drivers/edit/:id' element={<EditDriver />} />
-              <Route path='/drivers/vehicles/assign/:id' element={<AssignDriver />} />
+            <Route>
+              <Route element={<ProtectedRoute requiredRole="admin" />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/vehicles" element={<Vehicles />} />
+                <Route path="/vehicles/add" element={<AddVehicleForm />} />
+                <Route path="/vehicles/edit/:id" element={<EditVehicleForm />} />
+                <Route path="/shipments" element={<ShipmentPage />} />
+                <Route path="/shipments/vehicles/assign/:id" element={ <AssignVehicle />}  />
+                <Route path="/shipments/add" element={<AddShipment />} />
+                {/* <Route path="/shipments/edit/:id" element={<EditShipmentForm />} /> */}
+                <Route path="/shipments/shipmenthistory" element={<ShipmentHistory />} /> 
+                <Route path="/shipments/track/:id" element={<ShipmentTrack />} />
+                <Route path="/users" element={<User />} />
+                <Route path='/drivers' element={<Driver />} />
+                <Route path='/drivers/add' element={<AddDriver />} />
+                <Route path='drivers/edit/:id' element={<EditDriver />} />
+                <Route path='/drivers/vehicles/assign/:id' element={<AssignDriver />} />
+              </Route>
+              <Route path='/currentshipment/:id' element={<Currentshipment />} />
+              <Route path="/shipmenthistory/:id" element={<Shipmenthistory />} />
+              <Route path="/track" element={<TrackingPage />} />
+              <Route path="/profile" element={<ProfilePage />}/>
+              <Route path="/booking/:id" element={<BookingPage />} />
+              
+              <Route path="/profile/mybookings/:id" element={<MyBookings />} />
+              <Route path="/profile/edit/:id" element={<EditProfile />} />
             </Route>
-            <Route path='/currentshipment/:id' element={<Currentshipment />} />
-            <Route path="/shipmenthistory/:id" element={<Shipmenthistory />} />
-            <Route path="/track" element={<TrackingPage />} />
-            <Route path="/profile" element={<ProfilePage />}/>
-            <Route path="/booking/:id" element={<BookingPage />} />
-            
-            <Route path="/profile/mybookings/:id" element={<MyBookings />} />
-            <Route path="/profile/edit/:id" element={<EditProfile />} />
           </Routes>    
         </LoginContext.Provider>
       </AuthProvider>

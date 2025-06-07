@@ -46,10 +46,11 @@ function Login() {
       }).then(data => {
         console.log(data);
         if (data==='Login Successfull!') {
-          Driverlogin({username,password,role}); // Call the login function from AuthContext
+          localStorage.setItem('isLogedin',"true");
           localStorage.setItem('token', data);
-          setisLogedin(true);
           setText("Login Successfull");
+          Driverlogin({username,password,role}); // Call the login function from AuthContext
+          setisLogedin(true);
           navigate('/profile');
         } 
         else{
@@ -126,6 +127,9 @@ function Login() {
       </form>
       <Typography variant="body2" onClick={() => !isLogedin && navigate('/signup')} style={{ marginTop: '10px' }}>
         Don't have an account? <span style={{ cursor: 'pointer',color:"blue"}}>Sign Up</span>
+      </Typography>
+      <Typography variant="body2" sx={{mt:1}} onClick={()=>{ !isLogedin && navigate('/forgetpassword') }}>
+        Forget Password? <span style={{cursor:'pointer' , color:'blue'}} > Reset password</span>
       </Typography>
     </Container>
   );

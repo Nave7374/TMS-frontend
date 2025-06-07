@@ -3,6 +3,7 @@ import {
   Box, Button, MenuItem, Select, TextField, Typography, Snackbar, Alert
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import FullpageLoader from '../../components/FullPageLoader';
 
 
 const vehicleTypes = ['Truck', 'Van', 'Mini Lorry']; // This can be fetched from backend too
@@ -11,7 +12,7 @@ function BookingPage() {
 
   const { id } = useParams();
   const [success, setSuccess] = useState(false);
-
+  const [loading,setLoading] = useState(false);
   const [shipmentdetails , setShipmentdetails] = useState({
     origin: '',
     destination: '',
@@ -29,7 +30,7 @@ function BookingPage() {
 
   function handleBooking(e){
     e.preventDefault();
-
+    setLoading(true);
     fetch(`http://localhost:8080/api/shipments/book/${id}`, {
       method: 'POST',
       headers: {
@@ -41,12 +42,14 @@ function BookingPage() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();
+      return response.text();
     }).then((data) => {
       console.log(data);
+      setLoading(false);
       setSuccess(true);
       setShipmentdetails({ origin: '', destination: '', shipmentDate: '', vehicleType: '', weight: '' }); // Reset form fields
     }).catch((error) => {
+      setLoading(false);
       console.error(error);
       alert("Error booking shipment");
     });
@@ -61,7 +64,8 @@ function BookingPage() {
     });
   }
 
-  return (
+  return (<>
+  {loading && <FullpageLoader />}
     <Box sx={{ maxWidth: 500, margin: 'auto', p: 3 }}>
       <Typography variant="h5" gutterBottom>Book a Shipment</Typography>
       <form onSubmit={handleBooking} method='POST'>
@@ -100,6 +104,7 @@ function BookingPage() {
         <Alert severity="success">Shipment booked successfully!</Alert>
       </Snackbar>
     </Box>
+    </>
   );
 }
 

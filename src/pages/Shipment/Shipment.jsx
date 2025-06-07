@@ -73,6 +73,13 @@ function ShipmentPage() {
       >
         Add New Shipment
       </Button>
+      <Button 
+      variant='contained'
+      color='primary'
+      sx={{mb:3}}
+      onClick={()=>navigate('shipmenthistory')}
+      >Shipment History
+      </Button>
       {shipments.length===0 ? <Typography>No Shipments Booked</Typography> : <>
       <TableContainer>
         <Table>

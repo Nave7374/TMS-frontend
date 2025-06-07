@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Avatar, Button, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,22 +10,23 @@ const ProfilePage = () => {
   const [isUser,setIsUser] = useState(false);
   // const token = localStorage.getItem('token');
  
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    console.log('Stored User:', storedUser);
+  if(!user){
+    setTimeout(() => {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      console.log('Stored User:', storedUser);
 
-    setUser(storedUser);
+      setUser(storedUser);
 
-    if (!storedUser?.role) {
-      setIsDriver(true);
-    } else {
-      setIsUser(storedUser?.role === 'user');
-    }
-    if (storedUser) {
-      setLoading(false);
-    }
-  }, [setUser]);
-
+      if (!storedUser?.role) {
+        setIsDriver(true);
+      } else {
+        setIsUser(storedUser?.role === 'user');
+      }
+      if (storedUser) {
+        setLoading(false);
+      }
+    }, 500);
+}
 
   // useEffect(() => {
 

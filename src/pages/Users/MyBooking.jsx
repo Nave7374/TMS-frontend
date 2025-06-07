@@ -101,7 +101,7 @@ const MyBookings = () => {
           </Paper>
         ))
       )}
-      <Typography>Shipment History</Typography>
+      <Typography sx={{mt:3 , mb:2}} variant='h5'>Shipment History</Typography>
       {
         !shipmenthistoryloading && shipmenthistory.map((item,index) => (
           <Paper key={index} elevation={3} sx={{p:2 , mb:2}}>

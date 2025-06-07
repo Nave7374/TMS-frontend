@@ -4,7 +4,11 @@ import { AuthContext } from '../utils/AuthContext';
 
 
 const ProtectedRoute = ({ requiredRole }) => {
-  const { isAuthenticated, isAdmin, isDriver } = useContext(AuthContext);
+  const { isAuthenticated,isLogedin, isAdmin, isDriver } = useContext(AuthContext);
+  
+  if(!isLogedin){
+    return <Navigate to="/login" />
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;

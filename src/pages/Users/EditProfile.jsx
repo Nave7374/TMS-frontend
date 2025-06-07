@@ -9,7 +9,6 @@ function EditProfile(){
   const navigate = useNavigate();
   const {id} = useParams();
   const [selectedField,setSelectedField] = useState('firstName');
-  const [passwordnew , setPasswordnew] = useState("");
 
   // const token = localStorage.getItem('token');
 
@@ -39,26 +38,23 @@ function EditProfile(){
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedUser = { ...user };
-    if (passwordnew.trim()) {
-      updatedUser.password = passwordnew;
-    }
     fetch(`http://localhost:8080/api/users/update/${id}`, {
       method: 'PUT',
       headers: {
         // 'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(updatedUser),
+      body: JSON.stringify(user),
     })
     .then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.text();
+      return response.json();
     })
     .then((data) => {
-      alert(data);
+      alert("Usr Details Updated");
+      localStorage.setItem('user',JSON.stringify(data));
       navigate('/profile');
     })
     .catch((error) => {
@@ -78,10 +74,6 @@ function EditProfile(){
     }));
   }
 
-  function handleValueChangepassword(e){
-    const { value } = e.target;
-    setPasswordnew(value);
-  }
 
   return  loading ?( <CircularProgress />):(
     <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 600, mx: 'auto', mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
@@ -108,14 +100,6 @@ function EditProfile(){
           onChange={handleValueChange}
           fullWidth
           required
-          margin="normal"
-        />
-        <TextField
-          label={"New Password"}
-          name="passwordnew"
-          value={passwordnew}
-          onChange={handleValueChangepassword}
-          fullWidth
           margin="normal"
         />
         <Button
