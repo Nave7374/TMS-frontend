@@ -1,13 +1,13 @@
 import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Currentshipment = ()=>{
 
     const [Shipment,setShipment] = useState(null);
     const [vehicle , setVehicle] = useState(null);
     const [loading,setLoading] = useState(true);
-    // const [driver,setDriver] = useState(null);
+    const [driver,setDriver] = useState(null);
     const [updating,setUpdating] = useState(false);
     const [intervalId,setIntervalId] = useState(null);
     const [latitude , setLatitude] = useState(null);
@@ -15,21 +15,39 @@ const Currentshipment = ()=>{
     const [location,setLocation] = useState(null);
     const navigate = useNavigate();
 
-    // const {id} = useParams();
+    const {id} = useParams();
 
     useEffect(()=>{
-        // fetch(`http://localhost:8080/api/driver/${id}`,{})
-        const driver = JSON.parse(localStorage.getItem('user'));
-        console.log(driver);
-        const vehicle = driver?.vehicle;
-        setVehicle(vehicle);
-        const shipment = vehicle?.shipment;
-        setShipment(shipment);
-        console.log(vehicle);
-        setLoading(false);
-        console.log(shipment);
+        fetch(`http://localhost:8080/api/driver/${id}`,{
+            method:'GET',
+            headers:{
+                // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            }
+        }).then(response => {
+            if(!response.ok){
+                throw new Error('Network response error');
+            }
+            return response.json();
+        }).then(data => {
+            console.log("Driver Details");
+            console.log(data);
+            setDriver(data);
+            setVehicle(data?.vehicle);
+            setShipment(data?.vehicle?.shipment);
+            setLoading(false);
+        }).catch(error => console.error(error));
+        // const driver = JSON.parse(localStorage.getItem('user'));
+        // console.log(driver);
+        // const vehicle = driver?.vehicle;
+        // setVehicle(vehicle);
+        // const shipment = vehicle?.shipment;
+        // setShipment(shipment);
+        // console.log(vehicle);
+        // setLoading(false);
+        // console.log(shipment);
         // setDriver(driver);
-    },[setShipment]);
+    },[id]);
 
     const depositeLocation = () => {
         if(!navigator.geolocation){
@@ -85,8 +103,9 @@ const Currentshipment = ()=>{
                 if(!response.ok){
                     throw  new Error("Network response Error");
                 }
-                return response.json();
+                return response.text();
             }).then(data => {
+                alert(data);
                 console.log(data);
         }).catch(error => console.error(error))
         navigate('/profile');
@@ -109,7 +128,7 @@ const Currentshipment = ()=>{
         </Typography>
 
         { loading ? <CircularProgress /> : (
-            // driver?.vehicle?.shipment==null ? <Typography>No Current Shipment </Typography> : 
+            driver?.vehicle?.shipment==null ? <Typography>No Current Shipment </Typography> : 
             <>
                 <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
                     <Typography variant="h5">Vehicle No : {vehicle?.registrationNumber}</Typography>
