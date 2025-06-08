@@ -1,4 +1,4 @@
-import { Box, CircularProgress, rgbToHex } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 function FullpageLoader(){
 
