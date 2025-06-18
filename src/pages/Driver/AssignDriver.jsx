@@ -5,35 +5,31 @@ import {
   TextField,
   MenuItem,
   Button,
-  Box
+  Box,
+  Alert
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function AssignDriver() {
     const {id} = useParams();
     const [vehicles, setVehicles] = useState([]);
     const [vehicleId, setVehicleId] = useState('');
-
+    const [msg,setMsg] = useState("");
+    const [errmsg,setErrmsg] = useState("");
     const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/vehicles/status/assigned',{
-        method:'GET',
-        headers:{
-            // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-        }
-    }).then(response =>{
-        if(!response.ok){
-            throw new Error('Network Response Error');
-        }
-        return response.json();
-    }).then(data=>{
-        console.log(data);
-        setVehicles(data);
-        // console.log(vehicles);
+    axios.get('http://localhost:8080/api/vehicles/status/assigned',{
+      headers:{
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      }
+    }).then(response => {
+      console.log(response);
+      setVehicles(response.data);
     }).catch(error => {
-        console.error(error);
+      console.log(error);
     })
   }, [setVehicles]);
 
@@ -43,27 +39,22 @@ function AssignDriver() {
         driverID:id,
         vehicleID:vehicleId
     }
-    fetch('http://localhost:8080/api/vehicles/assign/driver',{
-        method:'POST',
-        headers:{
+
+    axios.post('http://localhost:8080/api/vehicles/assign/driver',parameters,{
+      headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
-        },
-        body:JSON.stringify(parameters)
+      }
     }).then(response => {
-        if (!response.ok) {
-            throw new Error("Assignment failed");
-        }
-        return response.text();
+      console.log(response);
+      setErrmsg("");
+      setMsg(response.data);
+      setTimeout(()=>navigate('/drivers') ,3000);
+    }).catch(error => {
+      console.log(error);
+      setErrmsg(error.response.data);
+      setMsg("")
     })
-    .then(data => {
-        console.log("Assignment successful:", data);
-        // Optionally reset form or show success
-        navigate('/drivers');
-    })
-    .catch(error => {
-        console.error("Error during assignment:", error);
-    });
   };
 
   return (
@@ -109,6 +100,8 @@ function AssignDriver() {
             Assign Vehicle
           </Button>
         </form>
+        {msg && <Alert severity='success' sx={{mt:2}}>{msg}</Alert>}
+        {errmsg && <Alert severity='error' sx={{mt:2}} >{errmsg}</Alert>}
       </Box>
     </Container>
   );

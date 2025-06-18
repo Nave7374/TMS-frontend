@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Typography, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Button, Typography, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 // import { useNavigate } from 'react-router-dom';
 // import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import ShareLocationIcon from '@mui/icons-material/ShareLocation';
+import axios from 'axios';
+import FullpageLoader from '../../components/FullPageLoader';
 
 function ShipmentPage() {
   const [shipments, setShipments] = useState([]);
   const navigate = useNavigate();
   const [loading,setLoading]=useState(true);
+  const [msg,setMsg] = useState("");
+  const [errmsg,setErrMsg] = useState("");
 
   useEffect(() => {
 
@@ -37,22 +41,22 @@ function ShipmentPage() {
 
   // Handle delete shipment
   const handleDelete = (id) => {
-    fetch(`http://localhost:8080/api/shipments/${id}`, {
-      method: 'DELETE',
+    axios.delete(`http://localhost:8080/api/shipments/${id}`, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
-      },
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
       }
-      return response.text();
-    }).then((data) => {
-      alert(data);
+    }).then((response) => {
+      setMsg(response.data);
+      setErrMsg("");
       setShipments(shipments.filter(shipment => shipment.id !== id)); // Update state after delete
+      setTimeout(()=>{
+        setMsg("")
+      },3000)
     }).catch((error) => {
-      console.error(error);
+      console.log(error);
+      setErrMsg(error.response.data);
+      setMsg("");
     });
   };
 
@@ -63,7 +67,7 @@ function ShipmentPage() {
       </Typography>
 
       {
-        loading?<CircularProgress />:<>
+        loading?<FullpageLoader />:<>
         <Button 
         variant="contained" 
         color="primary" 
@@ -73,13 +77,15 @@ function ShipmentPage() {
       >
         Add New Shipment
       </Button>
-      <Button 
+      <Button
       variant='contained'
       color='primary'
-      sx={{mb:3}}
+      sx={{mb:3 , ml:4}}
       onClick={()=>navigate('shipmenthistory')}
       >Shipment History
       </Button>
+        {msg && <Alert severity='success' sx={{mt:2}} >{msg}</Alert>}
+        {errmsg && <Alert severity='error' sx={{mt:2}} >{errmsg}</Alert>}
       {shipments.length===0 ? <Typography>No Shipments Booked</Typography> : <>
       <TableContainer>
         <Table>

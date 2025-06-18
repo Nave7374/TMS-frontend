@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Container, TextField, Button, Typography, Box, Alert, Select, Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import axios from 'axios'
 
 function AddShipment() {
 
@@ -13,14 +14,37 @@ function AddShipment() {
     destination: '',
     status: '',
     vehicleType: '',
-    shipmentDate:null
+    shipmentDate:null,
   });
-
+  const [msg,setMsg] = useState("");
+  const [errmsg,setErrmsg] = useState("")
   const navigate = useNavigate();
+  const [users,setUsers] = useState([]);
+  const [userid,setUserid] = useState('');
+
+  useEffect(()=>{
+    axios.get('http://localhost:8080/api/users/filterbyname',{
+      headers:{
+        // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      }
+    }).then(response => {
+      setUsers(response.data);
+      console.log(response);
+      setErrmsg("");
+      setMsg("");
+    }).catch(error => {
+      setErrmsg(error.response.data);
+      console.log(error);
+      setMsg("");
+      setTimeout(() => {
+        setErrmsg("");
+      }, 4000);
+    })
+  },[setUsers]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
   
     const formattedShipment = {
       ...shipment,
@@ -29,28 +53,22 @@ function AddShipment() {
         : null,
     };
 
-    fetch('http://localhost:8080/api/shipments', {
-      method: 'POST',
+    axios.post(`http://localhost:8080/api/shipments/book/${userid}`,formattedShipment,{
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formattedShipment),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
       }
-      return response.json();
-    }).then((data) => {
-      console.log(data);
-      alert("Shipment added successfully!");
+    }).then(response => {
+      console.log(response);
+      setMsg("Shipment added successfully!");
+      setErrmsg("")
       setShipment({ origin: '', destination: '', status: '', vehicleType: '', shipmentDate:null }); // Reset form fields
-      navigate('/shipments'); // Redirect to shipments list
-    }).catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-      alert("Error adding shipment");
-    });
-    // Post new shipment data to backend
+      setTimeout(()=>navigate('/shipments'),3000) // Redirect to shipments list)
+    }).catch(error => {
+      setErrmsg(error.response.data);
+      setMsg("");
+      console.log(error);
+    })
   };
 
   function handleDateChange(newDate){
@@ -66,6 +84,12 @@ function AddShipment() {
       ...shipment,
       [name]: value
     });
+  }
+
+  const handleChangeforUser = (e) => {
+    console.log(e);
+    setUserid(e.target.value.id);
+    console.log(e.target.value.id);
   }
 
   return (
@@ -116,9 +140,23 @@ function AddShipment() {
             onChange={handleChange}
             required
           />
+          <Select
+            labelId='select-user'
+            name='user'
+            value={userid}
+            label="Select User"
+            onChange={handleChangeforUser}
+            required
+          >
+            {users.map((item,index)=>{
+                return (<MenuItem key={index} value={item} >{item.firstName} - {item.phoneNumber} - {item.email}</MenuItem>)
+            })}
+          </Select>
           <Button variant="contained" color="primary" type="submit">
             Add Shipment
           </Button>
+          {msg && <Alert severity="success" sx={{mt:2}} >{msg}</Alert>}
+          {errmsg && <Alert severity="error" sx={{mt:2}} >{errmsg}</Alert>}
         </Box>
       </form>
     </Container>

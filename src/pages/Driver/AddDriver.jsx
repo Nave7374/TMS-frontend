@@ -1,16 +1,19 @@
-import { Box, Button, Container, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, MenuItem, Select, TextField, Typography } from "@mui/material";
 // import { LocalizationProvider } from "@mui/x-date-pickers";
 // import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import dayjs from "dayjs";
+import axios from 'axios';
 
 
 
 function AddDriver(){
 
     const navigate = useNavigate();
+    const [succmsg,setSuccmsg] = useState("");
+    const [errmsg,setErrmsg] = useState("");
     const [driver,setDriver] = useState({
         firstname:'',
         lastname:'',
@@ -50,21 +53,13 @@ function AddDriver(){
         //   Dob: driver.Dob ? dayjs(driver.Dob).format('YYYY-MM-DD') : null
         // };
 
-        fetch('http://localhost:8080/api/driver/register',{
-            method:'POST',
-            headers:{
+        axios.post('http://localhost:8080/api/driver/register',driver,{
+          headers:{
                  // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',
-            },
-            body:JSON.stringify(driver),
-        }).then(response => {
-            if(!response.ok){
-                throw new Error("Network response Error");
             }
-            return response.text();
-        }).then(data => {
-            console.log((data));
-            setDriver({
+        }).then(response => {
+          setDriver({
                 firstname:'',
                 lastname:'',
                 phone :'',
@@ -74,11 +69,15 @@ function AddDriver(){
                 email:'',
                 username:'',
                 password:'',
-            })
-            alert("Driver Added Successfully!");
+          })
+          console.log(response);
+          console.log(response.data);
+          setSuccmsg(response.data);
+          setTimeout(()=>{
             navigate("/drivers");
-        }).catch(error => {
-            console.error(error);
+          },3000);
+        }).catch(error =>{
+          setErrmsg(error.response.data);
         })
     }
 
@@ -87,7 +86,8 @@ function AddDriver(){
       <Typography variant="h4" align="center" gutterBottom>
         Add New driver
       </Typography>
-
+      {succmsg && <Alert severity="success" sx={{m:2}}>{succmsg}</Alert>}
+      {errmsg && <Alert severity="error" sx={{m:2}} >{errmsg}</Alert>}
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField

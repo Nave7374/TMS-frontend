@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
 import { useCallback } from "react";
 
 function ShipmentTrack(){
@@ -18,6 +18,7 @@ function ShipmentTrack(){
     lng: 77.5946,
     };
 
+    const [errmsg , setErrmsg] = useState("")
     const [location, setLocation] = useState(null);
     const [vehicle, setVehicle] = useState(null);
     const [tracking, setTracking] = useState(false);
@@ -42,7 +43,7 @@ function ShipmentTrack(){
       console.log(response);
       console.log(response.status);
       if (response.status === 204) {
-        alert('Vehicle Location Not updated yet');
+        setErrmsg('Vehicle Location Not updated yet');
         return;
       }
       return response.json();
@@ -54,7 +55,7 @@ function ShipmentTrack(){
       setLoading(false);
     })
     .catch(error => console.error(error));
-}, [id, setLocation, setVehicle, setLoading]);  // <-- include dependencies used inside
+}, [id]);  // <-- include dependencies used inside
 
  useEffect(()=>{
         fetchLocation();
@@ -76,6 +77,7 @@ function ShipmentTrack(){
   return (
     <Box sx={{ padding: 2 }}>
         <Box>
+          {errmsg && <Alert severity="error" sx={{m:2}} >{errmsg}</Alert>}
           {loading || !isLoaded ? (
             <CircularProgress />
           ) : (

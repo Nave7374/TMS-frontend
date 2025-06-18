@@ -1,13 +1,15 @@
-import { Button, CircularProgress, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 function Driver(){
 
+    const [msg,setMsg] = useState("");
+    const [errmsg,setErrmsg] = useState("");
     const [drivers,setDrivers] = useState([]);
     const [loading,setLoading] = useState(true);
     const navigate = useNavigate();
@@ -34,23 +36,23 @@ function Driver(){
     },[setDrivers]);
 
     function handleDelete(id){
-        fetch(`http://localhost:8080/api/driver/${id}`,{
-            method:'DELETE',
-            headers:{
+
+      axios.delete(`http://localhost:8080/api/driver/${id}`,{
+        headers:{
                  // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',
-            },
-        }).then(response => {
-            if(!response.ok){
-                throw new Error("Network reesponse Error");
-            }
-            return response.text();
-        }).then(data=>{
-            alert(data);
-            setDrivers(drivers.filter(driver => driver.id!==id));
-        }).catch(error=>{
-            console.error(error);
-        });
+        }
+      }).then(response => {
+        console.log(response);
+        setMsg(response.data);
+        setErrmsg("")
+        setDrivers(drivers.filter(driver => driver.id!==id));
+        setTimeout(()=>setMsg(""),3000);
+      }).catch(error => {
+        console.log(error);
+        setErrmsg(error.response.data);
+        setMsg("")
+      })
     }
 
     return (
@@ -70,7 +72,8 @@ function Driver(){
       >
         Add New Driver
       </Button>
-
+      {msg && <Alert severity="success" sx={{mt:2}} >{msg}</Alert>}
+      {errmsg && <Alert severity="error" sx={{mt:2}} >{errmsg}</Alert>}
       <TableContainer>
         <Table>
           <TableHead>

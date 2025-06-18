@@ -1,4 +1,5 @@
-import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
+import { Alert, Box, Button, Chip, CircularProgress, Paper, Typography } from "@mui/material";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -13,6 +14,8 @@ const Currentshipment = ()=>{
     const [latitude , setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
     const [location,setLocation] = useState(null);
+    const [msg,setMsg] = useState(null);
+    const [errmsg,setErrmsg] = useState(null);
     const navigate = useNavigate();
 
     const {id} = useParams();
@@ -93,22 +96,23 @@ const Currentshipment = ()=>{
             alert("Please Stop Updating Before delivering");
             return;
         }
-        fetch(`http://localhost:8080/api/tracking/${location?.id}`,{
-                method:'DELETE',
+        axios.delete(`http://localhost:8080/api/tracking/${location?.id}`,{
                 headers:{
                     // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
             }).then(response => {
-                if(!response.ok){
-                    throw  new Error("Network response Error");
-                }
-                return response.text();
-            }).then(data => {
-                alert(data);
-                console.log(data);
-        }).catch(error => console.error(error))
-        navigate('/profile');
+                console.log(response);
+                setErrmsg("");
+                setMsg("Shipment Delivered");
+                setTimeout(() => {
+                    navigate('/profile');
+                }, 4000);
+        }).catch(error =>{
+            console.error(error)
+            setErrmsg(error.response.data);
+            setMsg("");
+        })
     }
 
     const handleUpdate = ()=>{
@@ -140,7 +144,28 @@ const Currentshipment = ()=>{
                 <Button variant="contained" onClick={handleUpdate} color="primary">UpdateLocation</Button> :
                 <Button variant="outlined" color="error" onClick={handleStopUpdate}>Stop Updating</Button>}
                 <br/>
-                <Button sx={{mt:3}} variant="contained" color="" onClick={handleDelivered}>Delivered</Button>
+                {!loading && (
+                    <Chip
+                        label={updating ? "Live Tracking Active" : "Tracking Stopped"}
+                        color={updating ? "success" : "default"}
+                        variant="outlined"
+                        sx={{ mt: 2,
+                            mb:2,
+                            fontWeight: "bold",
+                            fontSize: "1rem",
+                            px: 1.5,
+                            py: 1,
+                            borderRadius: "16px",
+                            boxShadow: updating ? "0 0 8px rgba(0,255,0,0.4)" : "none",
+                            backgroundColor: updating ? "#e6f5ea" : "#f0f0f0",
+                            color: updating ? "#2e7d32" : "#555",
+                         }}
+                    />
+                )}
+                <br/>
+                <Button sx={{mt:3}} disabled={updating} variant="contained" color="" onClick={handleDelivered}>Delivered</Button>
+                {msg && <Alert severity="success" sx={{mt:2}} >{msg}</Alert>}
+                {errmsg && <Alert severity="error" sx={{mt:2}} >{errmsg}</Alert>}
             </>
         )}
     </Box>);

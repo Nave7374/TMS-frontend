@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function EditShipmentForm() {
     const { id } = useParams();
@@ -12,6 +13,8 @@ function EditShipmentForm() {
         status: ''
         });
     const navigate = useNavigate();
+    const [msg,setMsg] = useState("")
+    const [errmsg,setErrMsg] = useState("")
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/shipments/${id}`, {
@@ -42,28 +45,23 @@ function EditShipmentForm() {
       status: status
     };
 
-    fetch(`http://localhost:8080/api/shipments/${id}`, {
-      method: 'PUT',
+    axios.put(`http://localhost:8080/api/shipments/${id}`,newShipment,{
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newShipment),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }).then((data) => {
-      console.log(data);
-      alert("Shipment updated successfully!");
-      setStatus(''); // Reset form fields
-      navigate('/shipments'); // Redirect to shipments list
-    }).catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
+      }}).then(response => {
+        console.log(response)
+        setMsg("Shipment updated successfully!");
+        setErrMsg("");
+        setStatus(''); // Reset form fields
+        setTimeout(()=>navigate('/shipments'),3000) // Redirect to shipments list
+      }).catch((error) => {
+        console.log(error);
+        setErrMsg(error.response.data);
+        setMsg("");
+      });
     // Post new shipment data to backend
-  };
+    };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
@@ -84,6 +82,8 @@ function EditShipmentForm() {
           <Button variant="contained" color="primary" type="submit">
             Update Shipment
           </Button>
+          {msg && <Alert severity='success' sx={{mt:2}} >{msg}</Alert>}
+          {errmsg && <Alert severity='error' sx={{mt:2}} >{errmsg}</Alert>}
         </Box>
       </form>
     </Container>

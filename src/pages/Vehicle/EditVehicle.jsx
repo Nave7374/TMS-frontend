@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Box, CircularProgress, MenuItem, Select } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, CircularProgress, MenuItem, Select, Alert } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function EditVehicleForm() {
       const { id } = useParams(); // Get vehicle ID from URL
@@ -8,27 +9,30 @@ function EditVehicleForm() {
       const navigate = useNavigate();
       const [loading, setLoading] = useState(true);
       const [selectedField, setSelectedField] = useState("registrationNumber");
+      const [errmsg,setErrmsg] = useState("")
+      const [msg,setMsg] = useState("")
 
       useEffect(() => {
 
-        fetch(`http://localhost:8080/api/vehicles/update/${id}`, {
-          method: 'GET',
+        axios.get(`http://localhost:8080/api/vehicles/update/${id}`, {
           headers: {
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
           },
         }).then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.text();
-        }).then((data) => {
           console.log("Vehicle Data");
-          console.log(data);
-          setVehicle(data);
+          console.log(response);
+          setVehicle(response.data);
+          setErrmsg("");
+          setMsg("");
           setLoading(false);
         }).catch((error) => {
-          console.error('There was a problem with the fetch operation:', error);
+          console.log(error);
+          setErrmsg(error.response.data);
+          setMsg("");
+          setTimeout(() => {
+            setErrmsg("");
+          }, 4000);
         });
 
         // Fetch the vehicle data from the backend using the ID
@@ -37,24 +41,25 @@ function EditVehicleForm() {
     function handleSubmit(e){
     e.preventDefault();
 
-    fetch(`http://localhost:8080/api/vehicles/${id}`, {
-      method: 'PUT',
+    axios.put(`http://localhost:8080/api/vehicles/${id}`,vehicle, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(vehicle),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
       }
-      return response.json();
-    }).then((data) => {
-      console.log(data);
-      alert("Vehicle updated successfully!");
-      navigate('/vehicles')
+    }).then((response) => {
+      console.log(response);
+      setMsg(response.data);
+      setErrmsg("");
+      setTimeout(() => {
+        navigate('/vehicles');
+      }, 4000);
     }).catch((error) => {
-      console.error(error);
+      console.log(error);
+      setMsg("");
+      setErrmsg(error.response.data);
+      setTimeout(() => {
+        setErrmsg("");
+      }, 4000);
     });
     // Update vehicle data on the backend
   };
@@ -76,6 +81,9 @@ function EditVehicleForm() {
       <Typography variant="h4" align="center" gutterBottom>
         Edit Vehicle
       </Typography>
+      
+        {msg && <Alert severity='success'>{msg}</Alert>}
+        {errmsg && <Alert severity='error' >{errmsg}</Alert>}
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Select
             name="property"

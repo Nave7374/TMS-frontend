@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box, MenuItem, Select } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, MenuItem, Select, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function AddVehicleForm() {
     const [vehicle , setVehicle] = useState({
@@ -10,31 +11,33 @@ function AddVehicleForm() {
         registrationNumber:'',
         type:''
     });
-    const navigate = useNavigate();
+    const navigate = useNavigate();  
+    const [errmsg,setErrmsg] = useState("")
+    const [msg,setMsg] = useState("")
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    fetch('http://localhost:8080/api/vehicles/add', {
-      method: 'POST',
+    axios.post('http://localhost:8080/api/vehicles/add',vehicle, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(vehicle),
     }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }).then((data) => {
-      console.log(data);
-      alert("Vehicle added successfully!");
+      console.log(response);
+      setMsg("Vehicle Added");
+      setErrmsg("")
       setVehicle({ model: '', make:'', year:'', registrationNumber:'',type:'' }); // Reset form fields
-      navigate('/vehicles'); // Redirect to vehicles list
+      setTimeout(() => {
+        navigate('/vehicles');
+      }, 4000); // Redirect to vehicles list
     }).catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-      alert("Error adding vehicle");
+      console.log(error);
+      setErrmsg(error.response.data);
+      setMsg("");
+      setTimeout(() => {
+        setErrmsg("");
+      }, 4000);
     });
   };
 
@@ -52,6 +55,10 @@ function AddVehicleForm() {
       <Typography variant="h4" align="center" gutterBottom>
         Add New Vehicle
       </Typography>
+
+      
+      {msg && <Alert sx={{mb:2}} severity='success'>{msg}</Alert>}
+      {errmsg && <Alert severity='error' >{errmsg}</Alert>}
 
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

@@ -5,15 +5,20 @@ import {
   TextField,
   MenuItem,
   Button,
-  Box
+  Box,
+  Alert
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function AssignVehicle() {
     const {id} = useParams();
     const [vehicles, setVehicles] = useState([]);
     const [vehicleId, setVehicleId] = useState('');
     const navigate = useNavigate();
+    const [msg,setMsg] = useState("")
+    const [errmsg,setErrmsg] = useState('')
+
   useEffect(() => {
     fetch('http://localhost:8080/api/vehicles/status/available',{
         method:'GET',
@@ -41,27 +46,28 @@ function AssignVehicle() {
         shipmentID:id,
         vehicleID:vehicleId
     }
-    fetch('http://localhost:8080/api/vehicles/assign',{
-        method:'POST',
+    axios.post('http://localhost:8080/api/vehicles/assign',parameters,{
         headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
-        },
-        body:JSON.stringify(parameters)
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Assignment failed");
         }
-        return response.text();
-    })
-    .then(data => {
-        console.log("Assignment successful:", data);
-        alert(data);
-        navigate('/shipments');
+    }).then(response => {
+        console.log(response);
+        setMsg(response.data);
+        console.log(response.data);
+        setErrmsg("")
+        setTimeout(() => {
+          navigate('/shipments');
+        }, 2000);
         // Optionally reset form or show success
     })
     .catch(error => {
-        console.error("Error during assignment:", error);
+      console.log(error);
+      setErrmsg(error.response.data);
+      setMsg("");
+      setTimeout(() => {
+        setErrmsg("")
+      }, 6000);
     });
   };
 
@@ -72,6 +78,9 @@ function AssignVehicle() {
           Assign Vehicle to Shipment
         </Typography>
 
+        {errmsg && <Alert severity='error' sx={{m:2}} >{errmsg}</Alert>}
+        {msg && <Alert severity='success' sx={{m:2}} >{msg}</Alert>}
+        
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
@@ -91,11 +100,11 @@ function AssignVehicle() {
             margin="normal"
             required
           >
-            {vehicles.map((vehicle) => (
+            { vehicles ? vehicles.map((vehicle) => (
               <MenuItem key={vehicle.id} value={vehicle.id}>
                 #{vehicle.id} - {vehicle.registrationNumber} - {vehicle.type}
               </MenuItem>
-            ))}
+            )): <MenuItem key={1} value="No Vehicles Free">No Vehicles Free</MenuItem>}
           </TextField>
 
           <Button

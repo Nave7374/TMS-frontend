@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -11,10 +12,13 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from 'axios';
 
 function EditDriver() {
   const { id } = useParams();
   const [driver, setDriver] = useState(null);
+  const [msg,setMsg] = useState("");
+  const [errmsg,setErrmsg] = useState("")
   const [loading, setLoading] = useState(true);
   const [selectedField, setSelectedField] = useState("firstname");
   const navigate = useNavigate();
@@ -53,24 +57,22 @@ function EditDriver() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    fetch("http://localhost:8080/api/driver/update", {
-      method: "PUT",
+    axios.put('http://localhost:8080/api/driver/update',driver,{
       headers: {
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(driver),
+      }
+    }).then(response =>{
+      setMsg(response.data);
+      setErrmsg("")
+      setTimeout(() => {
+        navigate('/drivers')
+      }, 3000);
+    }).catch(error =>{
+      console.log(error);
+      setMsg("")
+      setErrmsg(error.response.data);
     })
-      .then((response) => {
-        console.log(response);
-        if (!response.ok) throw new Error("Network Response Error");
-        return response.text();
-      })
-      .then((data) => {
-        alert(data)
-        navigate('/drivers');
-      })
-      .catch((error) => console.error(error));
   }
 
   return loading ? (
@@ -118,6 +120,8 @@ function EditDriver() {
           >
             Update Driver
           </Button>
+          {msg && <Alert severity="success" sx={{mt:2}} >{msg}</Alert>}
+          {errmsg && <Alert severity="error" sx={{mt:2}} >{errmsg}</Alert>}
         </Box>
       </Paper>
     </Container>

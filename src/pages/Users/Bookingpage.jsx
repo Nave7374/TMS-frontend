@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import {
-  Box, Button, MenuItem, Select, TextField, Typography, Snackbar, Alert
-} from '@mui/material';
+import {  Box, Button, MenuItem, Select, TextField, Typography, Alert} from '@mui/material';
 import { useParams } from 'react-router-dom';
 import FullpageLoader from '../../components/FullPageLoader';
+import axios from 'axios';
 
 
 const vehicleTypes = ['Truck', 'Van', 'Mini Lorry']; // This can be fetched from backend too
@@ -11,7 +10,8 @@ const vehicleTypes = ['Truck', 'Van', 'Mini Lorry']; // This can be fetched from
 function BookingPage() {
 
   const { id } = useParams();
-  const [success, setSuccess] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [errmsg,setErrmsg] = useState("");
   const [loading,setLoading] = useState(false);
   const [shipmentdetails , setShipmentdetails] = useState({
     origin: '',
@@ -31,27 +31,28 @@ function BookingPage() {
   function handleBooking(e){
     e.preventDefault();
     setLoading(true);
-    fetch(`http://localhost:8080/api/shipments/book/${id}`, {
-      method: 'POST',
+    axios.post(`http://localhost:8080/api/shipments/book/${id}`,shipmentdetails, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(shipmentdetails),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
       }
-      return response.text();
-    }).then((data) => {
-      console.log(data);
+    }).then((response) => {
+      console.log(response);
       setLoading(false);
-      setSuccess(true);
+      setMsg("Shipment booked successfully!");
+      setErrmsg("");
       setShipmentdetails({ origin: '', destination: '', shipmentDate: '', vehicleType: '', weight: '' }); // Reset form fields
+      setTimeout(() => {
+        setMsg("")
+      }, 3000);
     }).catch((error) => {
       setLoading(false);
-      console.error(error);
-      alert("Error booking shipment");
+      console.log(error);
+      setMsg("");
+      setErrmsg("Error booking shipment", error.response.data );
+      setTimeout(() => {
+        setErrmsg("")
+      }, 3000);
     });
     // Post new shipment data to backend
   };
@@ -100,9 +101,9 @@ function BookingPage() {
         Book Now
       </Button>
       </form>
-      <Snackbar open={success} autoHideDuration={4000} onClose={() => setSuccess(false)}>
-        <Alert severity="success">Shipment booked successfully!</Alert>
-      </Snackbar>
+      
+      {msg && <Alert severity="success" sx={{mt:2}}>{msg}</Alert>}
+      {errmsg && <Alert severity='error'sx={{mt:2}}>{errmsg}</Alert>}
     </Box>
     </>
   );

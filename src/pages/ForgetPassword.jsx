@@ -9,6 +9,7 @@ import {
   Paper
 } from '@mui/material';
 import FullpageLoader from '../components/FullPageLoader';
+import axios from 'axios';
  
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -25,26 +26,21 @@ const ForgotPassword = () => {
       return;
     }
     setLoading(true);
-      fetch(`http://localhost:8080/api/password/forgot-password/${email.trim()}`,{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-      }).then(response => {
-        if(!response.ok){
-            throw new Error('Network response error');
-        }
-        return response.text();
-      }).then(data => {
-        setLoading(false);
-        setSuccessMsg( data);
-        setErrorMsg('');
-      }).catch(error => {
-        setLoading(false);
-        setErrorMsg(error);
-        setSuccessMsg('');
-        console.error(error);
-      })
+    
+    axios.post(`http://localhost:8080/api/password/forgot-password/${email.trim()}`,{
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(response => {
+      setLoading(false);
+      setSuccessMsg(response.data);
+      setErrorMsg("");
+    }).catch(error => {
+      setErrorMsg(error.response.data);
+      setLoading(false);
+      console.log(error);
+      setSuccessMsg("");
+    })
   };
 
   return <>

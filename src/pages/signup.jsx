@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, InputAdornment, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, Button, Typography, Container, InputAdornment, InputLabel, Select, MenuItem, Alert, FormControl } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import axios from 'axios';
 
 function Signup() {
   const [cpassword, setCpassword] = useState('');
@@ -17,6 +18,8 @@ function Signup() {
     password: '',
     role: ''
   });
+  const [errmsg,setErrmsg] = useState("")
+  const [msg,setMsg] = useState("")
 
   const navigate = useNavigate();
 
@@ -31,10 +34,10 @@ function Signup() {
 
   function handleSubmit(e){
     if(formData.password !== cpassword){
-      alert("Password and Confirm Password do not match");
+      setErrmsg("Password and Confirm Password do not match");
       return;
     }else if(formData.password.length < 8){
-      alert("Password must be at least 8 characters long");
+      setErrmsg("Password must be at least 8 characters long");
       return;
     }
     else submit(e); // call the async function to submit the form
@@ -43,21 +46,13 @@ function Signup() {
   function submit(e) {
     e.preventDefault();
     
-      fetch('http://localhost:8080/api/auth/signup', {
-        method: 'POST',
+      axios.post('http://localhost:8080/api/auth/signup',formData, {
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
         }
-        return response.text();
-      })
-      .then((data) => {
-        console.log(data);
+      }).then((response) => {
+        console.log(response.data);
+        setMsg(response.data)
           setFormData({
             firstname: '',
             lastname: '',
@@ -68,20 +63,27 @@ function Signup() {
             role: ''
           });
           setCpassword('');
-          alert(data);
-          if(data==='User registered successfully!') navigate('/login'); // Redirect to home page
+          setTimeout(()=>{
+            navigate('/login'); // Redirect to home page
+          },2000);
       })
       .catch((error) => {
-        console.error(error);
-        alert("Signup failed");
+        console.log(error);
+        setErrmsg(error.response.data)
+        setMsg('')
+        setTimeout(()=>{
+          setErrmsg("")
+        },6000)
       });
   }
 
   return (
     <Container maxWidth="xs">
-      <Typography variant='h5' align="center" >
+      <Typography variant='h5' align="center" sx={{mt:2}}>
         Sign Up Here
       </Typography>
+        {msg && <Alert severity='success' sx={{m:2}} >{msg}</Alert>}
+        {errmsg && <Alert severity='error' sx={{mt:2}} >{errmsg}</Alert>}
         <form method='POST' onSubmit={handleSubmit}>
           <TextField label="First name" onChange={handleChange} value={formData.firstname} name="firstname" fullWidth  margin="normal" type="text" required />
           <TextField label="Last name" onChange={handleChange} value={formData.lastname} name="lastname" fullWidth  margin="normal" type="text" required />
@@ -104,6 +106,7 @@ function Signup() {
             </InputAdornment>
             ),
           }} />
+          <FormControl fullWidth margin="normal" required>
           <InputLabel id="role-label">Role</InputLabel>
           <Select fullWidth
               labelId="role-label"
@@ -118,6 +121,7 @@ function Signup() {
               <MenuItem value="user">User</MenuItem>
               {/* <MenuItem value="driver">Driver</MenuItem> */}
           </Select>
+          </FormControl>
           <Button type="submit" variant="contained" style={{margin:"20px 0"}} color="primary" fullWidth>Sign Up</Button>  
         </form>
     </Container>

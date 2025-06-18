@@ -3,12 +3,17 @@ import {
   Box, Button, Typography, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow,
   Paper,
-  CircularProgress
+  CircularProgress,
+  Alert
 } from '@mui/material';
+import axios from 'axios';
 
 function User(){
     const [loading,setLoading] = useState(true);
     const [users, setUsers] = useState([]);
+
+    const [msg,setMsg] = useState("");
+    const [errmsg , setErrMsg] = useState("");
 
     const fetchUsers = async () => {
           fetch('http://localhost:8080/api/users',{
@@ -37,21 +42,24 @@ function User(){
     }, [setUsers]);
 
     function deleteUser(userId) {
-          fetch(`http://localhost:8080/api/users/${userId}`,{
-            method:'DELETE',
-              headers:{
-                  // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
-                  'Content-Type': 'application/json',
-          }}).then(response=>{
-            if(!response.ok){
-              throw new Error('Network Response Error');
-            }
-            return response.text();
-          }).then(data=>{
-            alert(data);
+      axios.delete(`http://localhost:8080/api/users/${userId}`,{
+        headers:{
+            // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            'Content-Type': 'application/json',
+        }}).then(response=>{
+          setMsg(response.data);
           setUsers(users.filter(user => user.id !== userId));
+          setErrMsg("")
+          setTimeout(() => {
+            setMsg("")
+          }, 3000);
         }).catch(error =>{
-          console.error( error);
+          console.log(error);
+          setErrMsg(error.response.data);
+          setMsg("")
+          setTimeout(()=>{
+            setErrMsg("")
+          },3000)
         })
       };
 
@@ -59,6 +67,8 @@ function User(){
         <Box p={3}>
         <Typography variant="h4" gutterBottom>User Management</Typography>
         <TableContainer component={Paper}>
+          {errmsg && <Alert severity='error' sx={{m:2}} >{errmsg}</Alert>}
+          {msg && <Alert severity='success' sx={{m:2}} >{msg}</Alert>}
           {loading?<CircularProgress />:
           <Table>
             <TableHead>

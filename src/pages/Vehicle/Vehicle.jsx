@@ -1,59 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, CircularProgress } from '@mui/material';
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, CircularProgress, Alert } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Vehicles() {
 
     const navigate = useNavigate();
     const [vehicles, setVehicles] = useState([]);
     const [loading,setLoading] = useState(true);
+    const [errmsg,setErrmsg] = useState("");
+    const [msg,setMsg] = useState("");
 
     // Fetch vehicles from the backend (assuming an API endpoint like /api/vehicles)
     useEffect(() => {
 
-      fetch('http://localhost:8080/api/vehicles', {
-        method: 'GET',
+      axios.get('http://localhost:8080/api/vehicles', {
         headers: {
           // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
         },
       }).then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      }).then((data) => {
-        console.log(data);
-        const sortedData = data.sort((a, b) => a.id - b.id);
-        console.log(sortedData);
-        setVehicles(sortedData);
+        setMsg("");
+        setErrmsg("");
+        console.log(response);
+        setVehicles(response.data);
         setLoading(false);
       }).catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
+        console.log(error);
+        setErrmsg(error.response.data);
+        setMsg("");
+        setTimeout(() => {
+          setErrmsg("")
+        }, 4000);
       });
     }, [setVehicles]);
 
     function handleDelete(vehicleId){
     // Handle vehicle deletion (call API)
-      fetch(`http://localhost:8080/api/vehicles/${vehicleId}`, {
-        method: 'DELETE',
+    axios.delete(`http://localhost:8080/api/vehicles/${vehicleId}`, {
         headers: {
           // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
         },
       }).then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.text();
-      }).then((data) => {
-        alert(data);
+        setMsg(response.data);
+        console.log(response.data);
+        setErrmsg("");
         setVehicles(vehicles.filter(vehicle => vehicle.id !== vehicleId)); // Update state after delete
+        setTimeout(() => {
+          setMsg("");
+        }, 4000);
       }).catch((error) => {
-        console.error( error);
+        console.log(error);
+        setErrmsg(error.response.data);
+        setMsg("");
+        setTimeout(() => {
+          setErrmsg("");
+        }, 4000);
       });
     };
 
@@ -74,6 +80,8 @@ function Vehicles() {
         Add New Vehicle
       </Button>
 
+        {msg && <Alert severity='success'>{msg}</Alert>}
+        {errmsg && <Alert severity='error' >{errmsg}</Alert>}
       {/* Vehicle Table */}
       <TableContainer component={Paper}>
         <Table>
@@ -88,9 +96,9 @@ function Vehicles() {
             </TableRow>
           </TableHead>
           <TableBody>
-              {vehicles.map((vehicle) => (
-              <TableRow key={vehicle.id}>
-                <TableCell>{vehicle.id}</TableCell>
+              {vehicles.map((vehicle,index) => (
+              <TableRow key={index}>
+                <TableCell>{index+1}</TableCell>
                 <TableCell>{vehicle.model}</TableCell>
                 <TableCell>{vehicle.type}</TableCell>
                 <TableCell>{vehicle.registrationNumber}</TableCell>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import axios from "axios";
 
 function ResetPassword(){
 
@@ -26,26 +27,21 @@ function ResetPassword(){
             setMSG("");
             return;
         }
-        fetch(`http://localhost:8080/api/password/reset?token=${token}&password=${password}`,{
-            method:'PUT',
+
+        axios.put(`http://localhost:8080/api/password/reset?token=${token}&password=${password}`,{
             headers: {
                 'Content-Type': 'application/json',
-            },
-        }).then(response => {
-            if(!response.ok){
-                throw new Error('Network Error');
             }
-            return response.text();
-        }).then(data => {
-            setMSG(data);
+        }).then(response => {
+            setMSG(response.data);
             setErrmsg("");
             setTimeout(() => {
                 navigate('/login')
             }, 3000);
         }).catch(error => {
-            setErrmsg(error);
+            setErrmsg(error.response.data);
             setMSG("");
-            console.error(error);
+            console.log(error);
         })
     }
 
@@ -57,7 +53,7 @@ function ResetPassword(){
                 Reset Your Password
             </Typography>
 
-            {msg && <Alert severity="success" >{msg}</Alert>}
+            {msg && <Alert severity="success" sx={{mt:2}} >{msg}</Alert>}
             {errmsg && <Alert severity="error" sx={{mt:2}}>{errmsg}</Alert>}
 
             <Box component="form" onSubmit={handleSubmit} sx={{mt:3}} >
