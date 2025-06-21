@@ -26,7 +26,7 @@ function TrackingPage() {
   });
 
   const fetchLocation = () => {
-    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/tracking/get/${shipmentid}`, {
+    fetch(`http://localhost:8080/api/tracking/get/${shipmentid}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,

@@ -46,7 +46,7 @@ function Signup() {
   function submit(e) {
     e.preventDefault();
     
-      axios.post('http://tms-backend-production-f4d1.up.railway.app/api/auth/signup',formData, {
+      axios.post('http://localhost:8080/api/auth/signup',formData, {
         headers: {
           'Content-Type': 'application/json',
         }

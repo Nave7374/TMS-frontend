@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData);
-    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/users/username/${userData.username}`, {
+    fetch(`http://localhost:8080/api/users/username/${userData.username}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
 
   const Driverlogin =(UserData) =>{
     console.log(UserData);
-    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/driver/username/${encodeURIComponent(UserData.username)}`, {
+    fetch(`http://localhost:8080/api/driver/username/${encodeURIComponent(UserData.username)}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,

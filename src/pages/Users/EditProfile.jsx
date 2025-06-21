@@ -16,7 +16,7 @@ function EditProfile(){
   // const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/users/update/${id}`, {
+    fetch(`http://localhost:8080/api/users/update/${id}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${token}`,
@@ -41,7 +41,7 @@ function EditProfile(){
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://tms-backend-production-f4d1.up.railway.app/api/users/update/${id}`,user, {
+    axios.put(`http://localhost:8080/api/users/update/${id}`,user, {
       headers: {
         // 'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'

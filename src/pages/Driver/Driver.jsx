@@ -15,7 +15,7 @@ function Driver(){
     const navigate = useNavigate();
 
     useEffect(()=>{
-        fetch('http://tms-backend-production-f4d1.up.railway.app/api/driver',{
+        fetch('http://localhost:8080/api/driver',{
             method:'GET',
             headers:{
                  // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -37,7 +37,7 @@ function Driver(){
 
     function handleDelete(id){
 
-      axios.delete(`http://tms-backend-production-f4d1.up.railway.app/api/driver/${id}`,{
+      axios.delete(`http://localhost:8080/api/driver/${id}`,{
         headers:{
                  // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',

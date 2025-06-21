@@ -53,7 +53,7 @@ function AddDriver(){
         //   Dob: driver.Dob ? dayjs(driver.Dob).format('YYYY-MM-DD') : null
         // };
 
-        axios.post('http://tms-backend-production-f4d1.up.railway.app/api/driver/register',driver,{
+        axios.post('http://localhost:8080/api/driver/register',driver,{
           headers:{
                  // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',

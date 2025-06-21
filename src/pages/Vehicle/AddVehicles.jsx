@@ -18,7 +18,7 @@ function AddVehicleForm() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    axios.post('http://tms-backend-production-f4d1.up.railway.app/api/vehicles/add',vehicle, {
+    axios.post('http://localhost:8080/api/vehicles/add',vehicle, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',

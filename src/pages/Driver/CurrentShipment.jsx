@@ -21,7 +21,7 @@ const Currentshipment = ()=>{
     const {id} = useParams();
 
     useEffect(()=>{
-        fetch(`http://tms-backend-production-f4d1.up.railway.app/api/driver/${id}`,{
+        fetch(`http://localhost:8080/api/driver/${id}`,{
             method:'GET',
             headers:{
                 // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -69,7 +69,7 @@ const Currentshipment = ()=>{
             console.log(currentlatitude);
             console.log(currentlongitude);
 
-            fetch(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/location/${Shipment?.shipmentNumber}`,{
+            fetch(`http://localhost:8080/api/shipments/location/${Shipment?.shipmentNumber}`,{
                 method:'POST',
                 headers:{
                     // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -96,7 +96,7 @@ const Currentshipment = ()=>{
             alert("Please Stop Updating Before delivering");
             return;
         }
-        axios.delete(`http://tms-backend-production-f4d1.up.railway.app/api/tracking/${location?.id}`,{
+        axios.delete(`http://localhost:8080/api/tracking/${location?.id}`,{
                 headers:{
                     // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',

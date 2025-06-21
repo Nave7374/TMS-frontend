@@ -17,7 +17,7 @@ function EditShipmentForm() {
     const [errmsg,setErrMsg] = useState("")
 
   useEffect(() => {
-    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/${id}`, {
+    fetch(`http://localhost:8080/api/shipments/${id}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -45,7 +45,7 @@ function EditShipmentForm() {
       status: status
     };
 
-    axios.put(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/${id}`,newShipment,{
+    axios.put(`http://localhost:8080/api/shipments/${id}`,newShipment,{
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
