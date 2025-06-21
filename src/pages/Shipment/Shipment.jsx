@@ -18,7 +18,7 @@ function ShipmentPage() {
 
   useEffect(() => {
 
-    fetch('http://localhost:8080/api/shipments', {
+    fetch('http://tms-backend-production-f4d1.up.railway.app/api/shipments', {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -41,7 +41,7 @@ function ShipmentPage() {
 
   // Handle delete shipment
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/api/shipments/${id}`, {
+    axios.delete(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/${id}`, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',

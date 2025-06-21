@@ -28,7 +28,7 @@ function ResetPassword(){
             return;
         }
 
-        axios.put(`http://localhost:8080/api/password/reset?token=${token}&password=${password}`,{
+        axios.put(`http://tms-backend-production-f4d1.up.railway.app/api/password/reset?token=${token}&password=${password}`,{
             headers: {
                 'Content-Type': 'application/json',
             }

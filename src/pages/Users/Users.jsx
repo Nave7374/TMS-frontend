@@ -16,7 +16,7 @@ function User(){
     const [errmsg , setErrMsg] = useState("");
 
     const fetchUsers = async () => {
-          fetch('http://localhost:8080/api/users',{
+          fetch('http://tms-backend-production-f4d1.up.railway.app/api/users',{
             method:'GET',
       headers:{
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ function User(){
     }, [setUsers]);
 
     function deleteUser(userId) {
-      axios.delete(`http://localhost:8080/api/users/${userId}`,{
+      axios.delete(`http://tms-backend-production-f4d1.up.railway.app/api/users/${userId}`,{
         headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
             'Content-Type': 'application/json',

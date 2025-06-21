@@ -31,7 +31,7 @@ function ShipmentTrack(){
     });
 
     const fetchLocation = useCallback(() => {
-  fetch(`http://localhost:8080/api/tracking/get/${id}`, {
+  fetch(`http://tms-backend-production-f4d1.up.railway.app/api/tracking/get/${id}`, {
     method: 'GET',
     headers: {
       // 'Authorization': `Bearer ${localStorage.getItem('token')}`,

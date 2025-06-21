@@ -13,7 +13,7 @@ const MyBookings = () => {
 
   useEffect(() => {
     
-    fetch(`http://localhost:8080/api/shipments/user/${id}`, {
+    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/user/${id}`, {
       method: 'GET',
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -46,7 +46,7 @@ const MyBookings = () => {
   },[id]);
 
   useEffect(()=>{
-    fetch(`http://localhost:8080/api/users/shipmenthistory/${id}`,{
+    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/users/shipmenthistory/${id}`,{
       method:'GET',
       headers:{
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,

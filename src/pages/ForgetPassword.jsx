@@ -27,7 +27,7 @@ const ForgotPassword = () => {
     }
     setLoading(true);
     
-    axios.post(`http://localhost:8080/api/password/forgot-password/${email.trim()}`,{
+    axios.post(`http://tms-backend-production-f4d1.up.railway.app/api/password/forgot-password/${email.trim()}`,{
       headers: {
         'Content-Type': 'application/json',
       }

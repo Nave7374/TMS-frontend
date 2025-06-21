@@ -30,7 +30,7 @@ const ProfilePage = () => {
 
   // useEffect(() => {
 
-  //   fetch(`http://localhost:8080/api/users/username/${username.username}`, {
+  //   fetch(`http://tms-backend-production-f4d1.up.railway.app/api/users/username/${username.username}`, {
   //     method: 'GET',
   //     headers: {
   //       // 'Authorization': `Bearer ${token}`,

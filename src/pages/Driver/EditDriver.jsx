@@ -24,7 +24,7 @@ function EditDriver() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/driver/update/${id}`, {
+    fetch(`http://tms-backend-production-f4d1.up.railway.app/api/driver/update/${id}`, {
       method: "GET",
       headers: {
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -57,7 +57,7 @@ function EditDriver() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    axios.put('http://localhost:8080/api/driver/update',driver,{
+    axios.put('http://tms-backend-production-f4d1.up.railway.app/api/driver/update',driver,{
       headers: {
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',

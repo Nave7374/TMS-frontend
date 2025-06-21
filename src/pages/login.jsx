@@ -33,7 +33,7 @@ function Login() {
       role: role
     }
     if(role==="driver"){
-      axios.post('http://localhost:8080/api/driver/login',data,{
+      axios.post('http://tms-backend-production-f4d1.up.railway.app/api/driver/login',data,{
         headers:{
           'Content-Type':'application/json',
         }
@@ -50,7 +50,7 @@ function Login() {
         console.log(error);
       })
     }else{
-        axios.post('http://localhost:8080/api/auth/login',data,{
+        axios.post('http://tms-backend-production-f4d1.up.railway.app/api/auth/login',data,{
           headers:{
             'Content-Type': 'application/json', 
           }
@@ -119,7 +119,7 @@ export default Login;
 
 //  FOR DRIVER LOGIN
 
-// fetch('http://localhost:8080/api/driver/login',{
+// fetch('http://tms-backend-production-f4d1.up.railway.app/api/driver/login',{
       //   method: 'POST',
       //   headers: {
       //     'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export default Login;
 
 // FOR USER OR ADMIN LOGIN
 
-//   fetch('http://localhost:8080/api/auth/login', {
+//   fetch('http://tms-backend-production-f4d1.up.railway.app/api/auth/login', {
     //   method: 'POST',
     //   headers: {
     //     'Content-Type': 'application/json',

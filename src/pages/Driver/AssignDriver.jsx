@@ -20,7 +20,7 @@ function AssignDriver() {
     const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/vehicles/status/assigned',{
+    axios.get('http://tms-backend-production-f4d1.up.railway.app/api/vehicles/status/assigned',{
       headers:{
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ function AssignDriver() {
         vehicleID:vehicleId
     }
 
-    axios.post('http://localhost:8080/api/vehicles/assign/driver',parameters,{
+    axios.post('http://tms-backend-production-f4d1.up.railway.app/api/vehicles/assign/driver',parameters,{
       headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',

@@ -14,7 +14,7 @@ function EditVehicleForm() {
 
       useEffect(() => {
 
-        axios.get(`http://localhost:8080/api/vehicles/update/${id}`, {
+        axios.get(`http://tms-backend-production-f4d1.up.railway.app/api/vehicles/update/${id}`, {
           headers: {
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ function EditVehicleForm() {
     function handleSubmit(e){
     e.preventDefault();
 
-    axios.put(`http://localhost:8080/api/vehicles/${id}`,vehicle, {
+    axios.put(`http://tms-backend-production-f4d1.up.railway.app/api/vehicles/${id}`,vehicle, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',

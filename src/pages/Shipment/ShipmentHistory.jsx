@@ -6,7 +6,7 @@ function ShipmentHistory(){
     const [shipmenthistory,setShipmentHistory ]= useState([]);
 
     useEffect(()=>{
-        fetch('http://localhost:8080/api/shipments/user/shipment/history',{
+        fetch('http://tms-backend-production-f4d1.up.railway.app/api/shipments/user/shipment/history',{
             method:'GET',
             headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,

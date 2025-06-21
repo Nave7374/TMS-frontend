@@ -31,7 +31,7 @@ function BookingPage() {
   function handleBooking(e){
     e.preventDefault();
     setLoading(true);
-    axios.post(`http://localhost:8080/api/shipments/book/${id}`,shipmentdetails, {
+    axios.post(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/book/${id}`,shipmentdetails, {
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',

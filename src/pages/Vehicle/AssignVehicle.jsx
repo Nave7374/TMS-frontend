@@ -20,7 +20,7 @@ function AssignVehicle() {
     const [errmsg,setErrmsg] = useState('')
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/vehicles/status/available',{
+    fetch('http://tms-backend-production-f4d1.up.railway.app/api/vehicles/status/available',{
         method:'GET',
         headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -46,7 +46,7 @@ function AssignVehicle() {
         shipmentID:id,
         vehicleID:vehicleId
     }
-    axios.post('http://localhost:8080/api/vehicles/assign',parameters,{
+    axios.post('http://tms-backend-production-f4d1.up.railway.app/api/vehicles/assign',parameters,{
         headers:{
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',

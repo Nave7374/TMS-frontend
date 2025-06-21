@@ -23,7 +23,7 @@ function AddShipment() {
   const [userid,setUserid] = useState('');
 
   useEffect(()=>{
-    axios.get('http://localhost:8080/api/users/filterbyname',{
+    axios.get('http://tms-backend-production-f4d1.up.railway.app/api/users/filterbyname',{
       headers:{
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ function AddShipment() {
         : null,
     };
 
-    axios.post(`http://localhost:8080/api/shipments/book/${userid}`,formattedShipment,{
+    axios.post(`http://tms-backend-production-f4d1.up.railway.app/api/shipments/book/${userid}`,formattedShipment,{
       headers: {
         // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
